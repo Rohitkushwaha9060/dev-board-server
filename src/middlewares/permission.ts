@@ -1,7 +1,7 @@
 import { HttpError } from '@/errors';
 import { Request, Response, NextFunction } from 'express';
 
-export const checkAdminMiddleware = (
+export const checkPermissionMiddleware = (
     req: Request,
     res: Response,
     next: NextFunction
