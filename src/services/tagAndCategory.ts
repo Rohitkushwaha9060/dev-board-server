@@ -189,7 +189,7 @@ class TagAndCategoryService {
         }
 
         return {
-            statusCode: 201,
+            statusCode: 200,
             message: 'category found',
             data: {
                 category,
