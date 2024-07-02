@@ -3,7 +3,7 @@ import * as socketIO from 'socket.io';
 
 // file imports
 import app from '@/app';
-import { secrets, logger } from '@/core';
+import { secrets, logger, connectDB } from '@/core';
 import { globalErrorHandler } from '@/middlewares';
 
 // server
@@ -26,6 +26,9 @@ io.on('connection', (socket) => {
         logger.info('A user disconnected ' + socket.id);
     });
 });
+
+// database connection
+connectDB();
 
 // set io in app
 app.set('socket', io);

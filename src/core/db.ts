@@ -15,8 +15,14 @@ redis.on('reconnecting', () => {
     logger.info('redis reconnecting');
 });
 
-async function connectDB() {
-    await mongoose.connect(secrets.DATABASE_URL);
-}
+const connectDB = async () => {
+    try {
+        const connection = await mongoose.connect(secrets.DATABASE_URL);
+        logger.info(`connection successfully ${connection.connection.host}`);
+    } catch (error) {
+        logger.error(`mongodb connection failed`);
+        process.exit(1);
+    }
+};
 
-export { redis };
+export { redis, connectDB };

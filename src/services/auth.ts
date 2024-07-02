@@ -1,7 +1,8 @@
-import { UserModel, secrets } from '@/core';
+import { secrets } from '@/core';
 import { ServiceResponse } from '@/types';
 import { emailService } from './email';
 import { utilsService } from './utils';
+import { UserModel } from '@/model';
 
 class AuthService {
     // sign up
@@ -12,11 +13,7 @@ class AuthService {
         password: string
     ): Promise<ServiceResponse> {
         // check if email is already in use
-        const user = await UserModel.findUnique({
-            where: {
-                email,
-            },
-        });
+        const user = await UserModel.findOne({ email });
 
         // check if email is already in use
         if (user) {
@@ -37,13 +34,11 @@ class AuthService {
 
         // create user
         const newUser = await UserModel.create({
-            data: {
-                name,
-                email,
-                phone,
-                password: hashedPassword,
-                otp,
-            },
+            name,
+            email,
+            phone,
+            password: hashedPassword,
+            otp,
         });
 
         // generate token
@@ -57,17 +52,10 @@ class AuthService {
         );
 
         // update user
-        await UserModel.update({
-            where: {
-                id: newUser.id,
-            },
-            data: {
-                token,
-            },
-        });
+        await UserModel.updateOne({ email }, { token });
 
         // send verification email
-        await emailService.sendVerificationEmail(newUser.email, otp);
+        await emailService.sendVerificationEmail(email, otp);
 
         // return response
         return {
@@ -82,11 +70,7 @@ class AuthService {
 
     // verification mail
     async sendVerificationMail(email: string) {
-        const user = await UserModel.findUnique({
-            where: {
-                email,
-            },
-        });
+        const user = await UserModel.findOne({ email });
 
         if (!user) {
             return {
@@ -116,18 +100,10 @@ class AuthService {
         );
 
         // update user
-        await UserModel.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                otp,
-                token,
-            },
-        });
+        await UserModel.updateOne({ email }, { otp, token });
 
         // send verification email
-        await emailService.sendVerificationEmail(user.email, otp);
+        await emailService.sendVerificationEmail(email, otp);
 
         // return response
         return {
@@ -156,11 +132,9 @@ class AuthService {
         }
 
         // check if email is valid
-        const user = await UserModel.findUnique({
-            where: {
-                email: decodedToken.email,
-                token,
-            },
+        const user = await UserModel.findOne({
+            email: decodedToken.email,
+            token,
         });
 
         // check if user exists
@@ -188,16 +162,10 @@ class AuthService {
         }
 
         // update user
-        await UserModel.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                isVerified: true,
-                otp: null,
-                token: null,
-            },
-        });
+        await UserModel.updateOne(
+            { email: decodedToken.email },
+            { isVerified: true, otp: null, token: null }
+        );
 
         //password reset
         user.password = '';
@@ -215,11 +183,7 @@ class AuthService {
     // sign in
     async signIn(email: string, password: string) {
         // find user
-        const user = await UserModel.findFirst({
-            where: {
-                email: email,
-            },
-        });
+        const user = await UserModel.findOne({ email });
 
         if (!user) {
             return {
@@ -239,7 +203,7 @@ class AuthService {
         // password validation
         const isMatch = await utilsService.comparePasswordBcrypt(
             password,
-            user.password
+            user.password!
         );
 
         if (!isMatch) {
@@ -268,14 +232,7 @@ class AuthService {
         );
 
         // set token in db
-        await UserModel.update({
-            where: {
-                id: user.id,
-            },
-            data: {
-                token: refreshToken,
-            },
-        });
+        await UserModel.updateOne({ id: user.id }, { token: refreshToken });
 
         return {
             statusCode: 200,
@@ -289,14 +246,7 @@ class AuthService {
 
     // sign out
     async signOut(userId: string) {
-        await UserModel.update({
-            where: {
-                id: userId,
-            },
-            data: {
-                token: null,
-            },
-        });
+        await UserModel.updateOne({ id: userId }, { token: null });
         return {
             statusCode: 200,
             message: 'sign out success',
