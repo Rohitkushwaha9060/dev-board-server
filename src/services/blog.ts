@@ -201,6 +201,17 @@ class BlogService {
                 select: {
                     name: 1,
                 },
+            })
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                },
             });
         return {
             statusCode: 200,
@@ -287,6 +298,138 @@ class BlogService {
         return {
             statusCode: 200,
             message: 'blog liked',
+        };
+    }
+
+    // add comment
+    async addComment(data: {
+        blogId: string;
+        comment: string;
+        userId: string;
+    }) {
+        // check if blog exists
+        const blog = await BlogModel.findById(data.blogId).populate({
+            path: 'author',
+        });
+
+        if (!blog) {
+            return {
+                statusCode: 400,
+                message: 'Blog not found',
+            };
+        }
+
+        // create comment
+        const newComment = await new BlogCommentModel({
+            blogId: data.blogId,
+            comment: data.comment,
+            author: data.userId,
+        });
+
+        blog.comments.push(newComment.id);
+        await blog.save();
+
+        // give credit to author
+        //@ts-ignore
+        if (blog.author?.id != data.userId) {
+            await UserModel.findOneAndUpdate(
+                {
+                    _id: blog.author?._id,
+                },
+                {
+                    //@ts-ignore
+                    credit: blog.author?.credit + 2,
+                },
+                { new: true }
+            );
+        }
+
+        // save comment
+        await newComment.save();
+
+        return {
+            statusCode: 201,
+            message: 'comment added',
+            data: newComment,
+        };
+    }
+
+    // update comment
+    async updateComment(data: { id: string; comment: string; userId: string }) {
+        // check if comment exists
+        const comment = await BlogCommentModel.findById(data.id);
+
+        if (!comment) {
+            return {
+                statusCode: 400,
+                message: 'Comment not found',
+            };
+        }
+
+        // check if user is the author
+        //@ts-ignore
+        if (comment.author?._id != data.userId) {
+            return {
+                statusCode: 400,
+                message: 'Access denied',
+            };
+        }
+
+        // update comment
+        const updatedComment = await BlogCommentModel.findByIdAndUpdate(
+            data.id,
+            {
+                comment: data.comment,
+            },
+            { new: true }
+        );
+
+        return {
+            statusCode: 200,
+            message: 'comment updated',
+            data: updatedComment,
+        };
+    }
+
+    // delete comment
+    async deleteComment(data: { id: string; userId: string }) {
+        // check if comment exists
+        const comment = await BlogCommentModel.findById(data.id);
+
+        if (!comment) {
+            return {
+                statusCode: 400,
+                message: 'Comment not found',
+            };
+        }
+
+        // check if user is the author
+        //@ts-ignore
+        if (comment.author?._id != data.userId) {
+            return {
+                statusCode: 400,
+                message: 'Access denied',
+            };
+        }
+
+        // remove comment from blog
+        const blog = await BlogModel.findById(comment.blogId).populate({
+            path: 'author',
+        });
+
+        if (blog?.comments && blog.comments.length > 0) {
+            blog.comments = blog.comments.filter(
+                (item) => item != (data.id as any)
+            );
+            await blog.save();
+        }
+
+        // delete comment
+        await BlogCommentModel.findByIdAndDelete(data.id);
+
+        return {
+            statusCode: 200,
+            message: 'comment deleted',
         };
     }
 }

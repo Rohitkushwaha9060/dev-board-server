@@ -67,3 +67,7 @@ export const blogSchema = z.object({
     tags: z.string({ required_error: 'Tag is required' }),
     categories: z.string({ required_error: 'Category is required' }),
 });
+
+export const commentSchema = z.object({
+    comment: z.string({ required_error: 'Content is required' }),
+});

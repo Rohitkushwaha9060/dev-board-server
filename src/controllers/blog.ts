@@ -1,4 +1,4 @@
-import { blogSchema } from '@/core';
+import { blogSchema, commentSchema } from '@/core';
 import { HttpError } from '@/errors';
 import { blogService } from '@/services';
 import { NextFunction, Request, Response } from 'express';
@@ -120,6 +120,82 @@ class BlogController {
             req.params.id,
             req.user?.id!
         );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // add comment
+    async addComment(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.id) {
+            return next(new HttpError('Blog id is required', 400));
+        }
+        const { data, error } = commentSchema.safeParse(req.body);
+
+        if (error) {
+            return next(new HttpError(error.issues[0].message, 400, error));
+        }
+
+        const response = await blogService.addComment({
+            blogId: req.params.id,
+            comment: data.comment,
+            userId: req.user?.id!,
+        });
+
+        if (response.statusCode === 201) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // update comment
+    async updateComment(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.id) {
+            return next(new HttpError('Comment id is required', 400));
+        }
+        const { data, error } = commentSchema.safeParse(req.body);
+
+        if (error) {
+            return next(new HttpError(error.issues[0].message, 400, error));
+        }
+
+        const response = await blogService.updateComment({
+            id: req.params.id,
+            comment: data.comment,
+            userId: req.user?.id!,
+        });
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // delete comment
+    async deleteComment(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.id) {
+            return next(new HttpError('Comment id is required', 400));
+        }
+        const response = await blogService.deleteComment({
+            id: req.params.id,
+            userId: req.user?.id!,
+        });
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({

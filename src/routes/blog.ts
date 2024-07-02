@@ -34,4 +34,19 @@ router.post(
     errorHandler(blogController.toggleBlogLike)
 );
 
+router
+    .route('/:id/comment')
+    .post(errorHandler(jwtMiddleware), errorHandler(blogController.addComment));
+
+router
+    .route('/comment/:id')
+    .patch(
+        errorHandler(jwtMiddleware),
+        errorHandler(blogController.updateComment)
+    )
+    .delete(
+        errorHandler(jwtMiddleware),
+        errorHandler(blogController.deleteComment)
+    );
+
 export { router as blogRoutes };
