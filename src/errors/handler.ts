@@ -8,7 +8,6 @@ export const errorHandler = (func: Function) => {
         try {
             await func(req, res, next);
         } catch (error: any) {
-            console.log(error);
             let err;
             if (error instanceof HttpError) {
                 err = error;
