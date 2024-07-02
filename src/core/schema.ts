@@ -35,3 +35,18 @@ export const signInSchema = z.object({
         .string({ required_error: 'Password is required' })
         .min(8, { message: 'Password must be at least 8 characters long' }),
 });
+
+export const resetPasswordSchema = z.object({
+    otp: z
+        .string({ required_error: 'otp is required' })
+        .min(4, { message: 'otp must be 4 characters' }),
+    password: z
+        .string({ required_error: 'Password is required' })
+        .min(8, { message: 'Password must be at least 8 characters long' }),
+});
+
+export const changePasswordSchema = z.object({
+    password: z
+        .string({ required_error: 'Password is required' })
+        .min(8, { message: 'Password must be at least 8 characters long' }),
+});

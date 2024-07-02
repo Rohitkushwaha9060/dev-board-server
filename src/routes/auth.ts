@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import { authController } from '@/controllers';
 import { errorHandler } from '@/errors';
-import { jwtMiddleware, tokenMiddleware } from '@/middlewares';
+import {
+    jwtMiddleware,
+    multerMiddleware,
+    tokenMiddleware,
+} from '@/middlewares';
 
 const router = Router();
 
@@ -29,6 +33,45 @@ router.post(
     '/signout',
     errorHandler(jwtMiddleware),
     errorHandler(authController.signout)
+);
+
+// get profile
+router.get(
+    '/profile',
+    errorHandler(jwtMiddleware),
+    errorHandler(authController.getUser)
+);
+
+// refresh token
+router.post(
+    '/refresh-token',
+    errorHandler(tokenMiddleware),
+    errorHandler(authController.refreshToken)
+);
+
+// forget password
+router.post('/forget-password', errorHandler(authController.forgetPassword));
+
+// reset password
+router.post(
+    '/reset-password',
+    errorHandler(tokenMiddleware),
+    errorHandler(authController.resetPassword)
+);
+
+// change password
+router.post(
+    '/change-password',
+    errorHandler(jwtMiddleware),
+    errorHandler(authController.changePassword)
+);
+
+// upload avatar
+router.post(
+    '/avatar',
+    errorHandler(jwtMiddleware),
+    errorHandler(multerMiddleware.single('avatar')),
+    errorHandler(authController.uploadAvatar)
 );
 
 export { router as authRoutes };

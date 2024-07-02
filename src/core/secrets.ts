@@ -19,13 +19,10 @@ const _secret = {
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET!,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET!,
 
-    // aws
-    AWS_SECRET_REGION: process.env.AWS_SECRET_REGION,
-    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
-    AWS_ACCESS_BUCKET_NAME: process.env.AWS_ACCESS_BUCKET_NAME,
-    AWS_BUCKET_URI: process.env.AWS_BUCKET_URI,
-    AWS_ENDPOINT: process.env.AWS_ENDPOINT,
+    // cloudinary
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
 
     // email
     EMAIL_HOST: process.env.EMAIL_HOST!,

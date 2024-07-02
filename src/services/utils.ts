@@ -3,6 +3,14 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import admin from 'firebase-admin';
 import { secrets } from '@/core';
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'fs';
+
+cloudinary.config({
+    cloud_name: secrets.CLOUDINARY_CLOUD_NAME,
+    api_key: secrets.CLOUDINARY_API_KEY,
+    api_secret: secrets.CLOUDINARY_API_SECRET,
+});
 
 class UtilsService {
     // hashPassword
@@ -52,6 +60,37 @@ class UtilsService {
                 universe_domain: secrets.FIREBASE_UNIVERSE_DOMAIN,
             }),
         });
+    };
+
+    // cloudinary upload
+    uploadToCloudinary = async (filePath: string) => {
+        try {
+            if (!filePath) return null;
+
+            const response = await cloudinary.uploader.upload(filePath, {
+                folder: 'devBoard',
+                resource_type: 'auto',
+            });
+            fs.unlinkSync(filePath);
+            return response;
+        } catch (error) {
+            fs.unlinkSync(filePath);
+            return null;
+        }
+    };
+
+    // cloudinary delete
+    deleteFromCloudinary = async (public_id: string) => {
+        try {
+            if (public_id) {
+                const res = await cloudinary.uploader.destroy(public_id);
+                return res;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            return null;
+        }
     };
 }
 
