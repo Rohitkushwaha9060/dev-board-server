@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 
 // file imports
 import { logger, secrets } from '@/core';
-import { authRoutes } from '@/routes';
+import { authRoutes, tagRoutes } from '@/routes';
 
 // app
 const app: Express = express();
@@ -30,6 +30,7 @@ app.use(cookieParser());
 
 // app routes
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/tag', tagRoutes);
 
 // app routes
 app.get('/', (req, res) => {
