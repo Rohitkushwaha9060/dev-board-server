@@ -469,11 +469,7 @@ class AuthService {
             };
         }
 
-        if (user.avatar?.url) {
-            await utilsService.deleteFromCloudinary(user.avatar?.publicKey!);
-        }
-
-        if (!file.originalname) {
+        if (!file) {
             // check if file is valid
             return {
                 statusCode: 400,
@@ -494,6 +490,10 @@ class AuthService {
         const cloudinaryRes: any = await utilsService.uploadToCloudinary(
             file.path
         );
+
+        if (user.avatar?.url) {
+            await utilsService.deleteFromCloudinary(user.avatar?.publicKey!);
+        }
 
         // update user
         await UserModel.updateOne(

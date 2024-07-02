@@ -5,6 +5,7 @@ import admin from 'firebase-admin';
 import { secrets } from '@/core';
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs';
+import slugify from 'slugify';
 
 cloudinary.config({
     cloud_name: secrets.CLOUDINARY_CLOUD_NAME,
@@ -91,6 +92,18 @@ class UtilsService {
         } catch (error) {
             return null;
         }
+    };
+
+    // slugify
+    slugifyData = (title: string) => {
+        return slugify(title, {
+            lower: true,
+            strict: true,
+            replacement: '_',
+            remove: /[*+~.()'"!:@]/g,
+            locale: 'en',
+            trim: true,
+        });
     };
 }
 

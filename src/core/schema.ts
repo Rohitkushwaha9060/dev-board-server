@@ -56,3 +56,14 @@ export const nameSchema = z.object({
         .string({ required_error: 'Name is required' })
         .min(3, { message: 'Name must be at least 3 characters long' }),
 });
+
+export const blogSchema = z.object({
+    title: z
+        .string({ required_error: 'Title is required' })
+        .min(3, { message: 'Title must be at least 3 characters long' }),
+    content: z
+        .string({ required_error: 'Content is required' })
+        .min(3, { message: 'Content must be at least 3 characters long' }),
+    tags: z.string({ required_error: 'Tag is required' }),
+    categories: z.string({ required_error: 'Category is required' }),
+});

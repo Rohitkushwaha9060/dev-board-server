@@ -20,16 +20,21 @@ const BlogSchema = new mongoose.Schema(
         },
 
         image: {
-            type: {
-                url: String,
-                public_id: String,
-            },
+            url: String,
+            public_id: String,
         },
 
         tags: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Tag',
+                ref: 'Tags',
+            },
+        ],
+
+        categories: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Categories',
             },
         ],
 
@@ -43,6 +48,20 @@ const BlogSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         },
+
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Users',
+            },
+        ],
+
+        comments: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'BlogComments',
+            },
+        ],
     },
     {
         timestamps: true,
