@@ -301,6 +301,48 @@ class BlogService {
         };
     }
 
+    // toggle isPublished
+    async toggleIsPublished(blogId: string, userId: any) {
+        // check if blog exists
+        const blog = await BlogModel.findById(blogId).populate({
+            path: 'author',
+        });
+
+        if (!blog) {
+            return {
+                statusCode: 400,
+                message: 'Blog not found',
+            };
+        }
+
+        if (blog.author?._id != userId) {
+            return {
+                statusCode: 400,
+                message: 'Access denied',
+            };
+        }
+
+        // check if user already liked
+        if (blog.isPublic) {
+            // unpublish blog
+            await BlogModel.updateOne(
+                { _id: blogId },
+                { $set: { isPublic: false } }
+            );
+        } else {
+            // publish blog
+            await BlogModel.updateOne(
+                { _id: blogId },
+                { $set: { isPublic: true } }
+            );
+        }
+
+        return {
+            statusCode: 200,
+            message: 'blog published',
+        };
+    }
+
     // add comment
     async addComment(data: {
         blogId: string;

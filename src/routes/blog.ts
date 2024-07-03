@@ -34,6 +34,12 @@ router.post(
     errorHandler(blogController.toggleBlogLike)
 );
 
+router.post(
+    '/:id/publish',
+    errorHandler(jwtMiddleware),
+    errorHandler(blogController.toggleIsPublished)
+);
+
 router
     .route('/:id/comment')
     .post(errorHandler(jwtMiddleware), errorHandler(blogController.addComment));

@@ -131,6 +131,26 @@ class BlogController {
         }
     }
 
+    // toggle is published
+    async toggleIsPublished(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.id) {
+            return next(new HttpError('Blog id is required', 400));
+        }
+        const response = await blogService.toggleIsPublished(
+            req.params.id,
+            req.user?.id!
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // add comment
     async addComment(req: Request, res: Response, next: NextFunction) {
         if (!req.params.id) {
