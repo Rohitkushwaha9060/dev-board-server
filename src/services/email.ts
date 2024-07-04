@@ -44,6 +44,7 @@ const sendMail = async ({
 };
 
 class EmailService {
+    // email ready
     async emailReady(mailgenContent: any) {
         const mailGenerator = new Mailgen({
             theme: 'default',
@@ -56,6 +57,7 @@ class EmailService {
         return mailGenerator.generate(mailgenContent);
     }
 
+    // send verification email
     async sendVerificationEmail(email: string, otp: string) {
         const mailgenContent = {
             body: {

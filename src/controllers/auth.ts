@@ -23,7 +23,7 @@ class AuthController {
         const response = await authService.signUp(
             data.name,
             data.email,
-            data.phone,
+            data.phone!,
             data.password
         );
 
