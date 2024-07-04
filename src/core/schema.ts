@@ -9,7 +9,8 @@ export const signUpSchema = z.object({
         .email({ message: 'Invalid email' }),
     phone: z
         .string({ required_error: 'Phone is required' })
-        .min(10, { message: 'Phone must be at least 10 characters long' }),
+        .min(10, { message: 'Phone must be at least 10 characters long' })
+        .optional(),
     password: z
         .string({ required_error: 'Password is required' })
         .min(8, { message: 'Password must be at least 8 characters long' }),
@@ -70,4 +71,17 @@ export const blogSchema = z.object({
 
 export const commentSchema = z.object({
     comment: z.string({ required_error: 'Content is required' }),
+});
+
+export const questionSchema = z.object({
+    question: z
+        .string({ required_error: 'Question is required' })
+        .min(10, { message: 'Question must be at least 10 characters long' }),
+    tags: z.array(z.string({ required_error: 'Tag is required' })),
+});
+
+export const answerSchema = z.object({
+    answer: z
+        .string({ required_error: 'Answer is required' })
+        .min(10, { message: 'Answer must be at least 10 characters long' }),
 });
