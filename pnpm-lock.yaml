@@ -56,12 +56,24 @@ importers:
       nodemailer:
         specifier: ^6.9.14
         version: 6.9.14
+      rmrf:
+        specifier: ^2.0.4
+        version: 2.0.4
       slugify:
         specifier: ^1.6.6
         version: 1.6.6
       socket.io:
         specifier: ^4.7.5
         version: 4.7.5
+      tsc-alias:
+        specifier: ^1.8.10
+        version: 1.8.10
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+      typescript:
+        specifier: ^5.5.2
+        version: 5.5.2
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -96,21 +108,6 @@ importers:
       nodemon:
         specifier: ^3.1.4
         version: 3.1.4
-      prisma:
-        specifier: ^5.16.1
-        version: 5.16.1
-      rmrf:
-        specifier: ^2.0.4
-        version: 2.0.4
-      tsc-alias:
-        specifier: ^1.8.10
-        version: 1.8.10
-      tsconfig-paths:
-        specifier: ^4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: ^5.5.2
-        version: 5.5.2
 
 packages:
 
@@ -1835,9 +1832,11 @@ snapshots:
     optionalDependencies:
       prisma: 5.16.1
 
-  '@prisma/debug@5.16.1': {}
+  '@prisma/debug@5.16.1':
+    optional: true
 
-  '@prisma/engines-version@5.16.0-24.34ace0eb2704183d2c05b60b52fba5c43c13f303': {}
+  '@prisma/engines-version@5.16.0-24.34ace0eb2704183d2c05b60b52fba5c43c13f303':
+    optional: true
 
   '@prisma/engines@5.16.1':
     dependencies:
@@ -1845,16 +1844,19 @@ snapshots:
       '@prisma/engines-version': 5.16.0-24.34ace0eb2704183d2c05b60b52fba5c43c13f303
       '@prisma/fetch-engine': 5.16.1
       '@prisma/get-platform': 5.16.1
+    optional: true
 
   '@prisma/fetch-engine@5.16.1':
     dependencies:
       '@prisma/debug': 5.16.1
       '@prisma/engines-version': 5.16.0-24.34ace0eb2704183d2c05b60b52fba5c43c13f303
       '@prisma/get-platform': 5.16.1
+    optional: true
 
   '@prisma/get-platform@5.16.1':
     dependencies:
       '@prisma/debug': 5.16.1
+    optional: true
 
   '@protobufjs/aspromise@1.1.2':
     optional: true
@@ -3065,6 +3067,7 @@ snapshots:
   prisma@5.16.1:
     dependencies:
       '@prisma/engines': 5.16.1
+    optional: true
 
   process-nextick-args@2.0.1: {}
 
