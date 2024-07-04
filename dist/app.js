@@ -34,7 +34,7 @@ app.use('/api/v1/blogs', routes_1.blogRoutes);
 app.use('/api/v1/qas', routes_1.qaRoutes);
 // app routes
 app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Hello World!' });
+    res.status(200).json({ message: 'Hello World! updated' });
 });
 // export app
 exports.default = app;

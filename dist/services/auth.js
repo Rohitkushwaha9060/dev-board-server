@@ -152,6 +152,7 @@ class AuthService {
     // sign in
     signIn(email, password) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             // find user
             const user = yield model_1.UserModel.findOne({ email });
             if (!user) {
@@ -191,6 +192,14 @@ class AuthService {
                 data: {
                     accessToken,
                     refreshToken,
+                    user: {
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        avatar: {
+                            url: (_a = user.avatar) === null || _a === void 0 ? void 0 : _a.url,
+                        },
+                    },
                 },
             };
         });
