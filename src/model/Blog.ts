@@ -46,7 +46,7 @@ const BlogSchema = new mongoose.Schema(
 
         author: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Users',
         },
 
         likes: [
@@ -76,10 +76,14 @@ const blogCommentSchema = new mongoose.Schema(
         },
         author: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'Users',
         },
         blogId: {
             type: String,
+        },
+        isPublic: {
+            type: Boolean,
+            default: true,
         },
     },
     { timestamps: true }
