@@ -14,6 +14,13 @@ router
     )
     .get(errorHandler(blogController.getBlogs));
 
+router
+    .route('/author')
+    .get(
+        errorHandler(jwtMiddleware),
+        errorHandler(blogController.getAllBlogsByAuthor)
+    );
+
 router.route('/:slug').get(errorHandler(blogController.getBlogBySlug));
 
 router
@@ -41,11 +48,12 @@ router.post(
 );
 
 router
-    .route('/:id/comment')
-    .post(errorHandler(jwtMiddleware), errorHandler(blogController.addComment));
+    .route('/:id/comments')
+    .post(errorHandler(jwtMiddleware), errorHandler(blogController.addComment))
+    .get(errorHandler(jwtMiddleware), errorHandler(blogController.getComments));
 
 router
-    .route('/comment/:id')
+    .route('/comments/:id')
     .patch(
         errorHandler(jwtMiddleware),
         errorHandler(blogController.updateComment)
@@ -53,6 +61,14 @@ router
     .delete(
         errorHandler(jwtMiddleware),
         errorHandler(blogController.deleteComment)
+    )
+    .get(errorHandler(blogController.getCommentsById));
+
+router
+    .route('/:id/comments/author')
+    .get(
+        errorHandler(jwtMiddleware),
+        errorHandler(blogController.getCommentsByAuthor)
     );
 
 export { router as blogRoutes };

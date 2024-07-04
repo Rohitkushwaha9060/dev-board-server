@@ -79,6 +79,21 @@ class BlogController {
         }
     }
 
+    // get all blogs by author
+    async getAllBlogsByAuthor(req: Request, res: Response, next: NextFunction) {
+        const response = await blogService.getAllBlogsByAuthor(req.user?.id!);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // get blog by slug
     async getBlogBySlug(req: Request, res: Response, next: NextFunction) {
         const response = await blogService.getBlogBySlug(req.params.slug);
@@ -221,6 +236,68 @@ class BlogController {
             return res.status(response.statusCode).json({
                 statusCode: response.statusCode,
                 message: response.message,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // get comments
+    async getComments(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.id) {
+            return next(new HttpError('Blog id is required', 400));
+        }
+        const response = await blogService.getComments(req.params.id);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // get comments by id
+    async getCommentsById(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.id) {
+            return next(new HttpError('Blog id is required', 400));
+        }
+        const response = await blogService.getCommentsById(req.params.id);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // get comments by author
+    async getCommentsByAuthor(req: Request, res: Response, next: NextFunction) {
+        if (!req.user?.id) {
+            return next(new HttpError('User id is required', 400));
+        }
+
+        if (!req.params.id) {
+            return next(new HttpError('Blog id is required', 400));
+        }
+
+        const response = await blogService.getCommentsByAuthor(
+            req.user?.id!,
+            req.params?.id
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
             });
         } else {
             return next(new HttpError(response.message, response.statusCode));

@@ -5,7 +5,13 @@ import cookieParser from 'cookie-parser';
 
 // file imports
 import { logger, secrets } from '@/core';
-import { authRoutes, blogRoutes, categoryRoutes, tagRoutes } from '@/routes';
+import {
+    authRoutes,
+    blogRoutes,
+    categoryRoutes,
+    qaRoutes,
+    tagRoutes,
+} from '@/routes';
 
 // app
 const app: Express = express();
@@ -30,9 +36,10 @@ app.use(cookieParser());
 
 // app routes
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/tag', tagRoutes);
-app.use('/api/v1/category', categoryRoutes);
-app.use('/api/v1/blog', blogRoutes);
+app.use('/api/v1/tags', tagRoutes);
+app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/blogs', blogRoutes);
+app.use('/api/v1/qas', qaRoutes);
 
 // app routes
 app.get('/', (req, res) => {

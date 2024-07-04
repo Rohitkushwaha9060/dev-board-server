@@ -150,7 +150,7 @@ class BlogService {
 
     // get blogs
     async getBlogs() {
-        const blogs = await BlogModel.find({})
+        const blogs = await BlogModel.find({ isPublic: true })
             .populate({
                 path: 'author',
                 select: {
@@ -171,6 +171,31 @@ class BlogService {
                     name: 1,
                 },
             });
+
+        if (blogs.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Blogs not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'get blogs',
+            data: blogs,
+        };
+    }
+
+    // get all blogs by author
+    async getAllBlogsByAuthor(userId: string) {
+        const blogs = await BlogModel.find({ author: userId });
+
+        if (blogs.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Blogs not found',
+            };
+        }
 
         return {
             statusCode: 200,
@@ -201,18 +226,8 @@ class BlogService {
                 select: {
                     name: 1,
                 },
-            })
-            .populate({
-                path: 'comments',
-                populate: {
-                    path: 'author',
-                    select: {
-                        name: 1,
-                        email: 1,
-                        avatar: 1,
-                    },
-                },
             });
+
         return {
             statusCode: 200,
             message: 'get blog',
@@ -472,6 +487,71 @@ class BlogService {
         return {
             statusCode: 200,
             message: 'comment deleted',
+        };
+    }
+
+    // get comments
+    async getComments(blogId: string) {
+        const comments = await BlogCommentModel.find({
+            blogId: blogId,
+        }).populate({
+            path: 'author',
+            select: {
+                name: 1,
+                email: 1,
+            },
+        });
+
+        if (comments.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Comments not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'comments found',
+            data: comments,
+        };
+    }
+
+    // get comments by id
+    async getCommentsById(id: string) {
+        const comment = await BlogCommentModel.findOne({ _id: id });
+
+        if (!comment) {
+            return {
+                statusCode: 404,
+                message: 'Comments not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'comment found',
+            data: comment,
+        };
+    }
+
+    // get comments by author
+    async getCommentsByAuthor(userId: string, blogId: string) {
+        const comments = await BlogCommentModel.find({
+            blogId: blogId,
+            author: userId,
+        });
+
+        if (comments.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Comments not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'comments found',
+            data: comments,
         };
     }
 }
