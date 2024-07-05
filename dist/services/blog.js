@@ -302,15 +302,19 @@ class BlogService {
             if (blog.isPublic) {
                 // unpublish blog
                 yield model_1.BlogModel.updateOne({ _id: blogId }, { $set: { isPublic: false } });
+                return {
+                    statusCode: 200,
+                    message: 'blog published Reverted',
+                };
             }
             else {
                 // publish blog
                 yield model_1.BlogModel.updateOne({ _id: blogId }, { $set: { isPublic: true } });
+                return {
+                    statusCode: 200,
+                    message: 'blog published',
+                };
             }
-            return {
-                statusCode: 200,
-                message: 'blog published',
-            };
         });
     }
     // add comment
