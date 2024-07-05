@@ -88,7 +88,7 @@ class QAController {
     // get all questions
     getAllQuestions(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.qaService.getAllQuestions();
+            const response = yield services_1.qaService.getAllQuestions(req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -105,7 +105,7 @@ class QAController {
     getAllQuestionsByAuthor(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const response = yield services_1.qaService.getAllQuestionsByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id);
+            const response = yield services_1.qaService.getAllQuestionsByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -237,7 +237,7 @@ class QAController {
             if (!req.params.questionId) {
                 return next(new errors_1.HttpError('Question id is required', 400));
             }
-            const response = yield services_1.qaService.getAnswers(req.params.questionId);
+            const response = yield services_1.qaService.getAnswers(req.params.questionId, req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -254,7 +254,7 @@ class QAController {
     getAnswersByAuthor(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const response = yield services_1.qaService.getAnswersByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, req.params.questionId);
+            const response = yield services_1.qaService.getAnswersByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, req.params.questionId, req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,

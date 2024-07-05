@@ -124,57 +124,207 @@ class BlogService {
         });
     }
     // get blogs
-    getBlogs() {
+    getBlogs(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blogs = yield model_1.BlogModel.find({ isPublic: true })
-                .populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            })
-                .populate({
-                path: 'tags',
-                select: {
-                    name: 1,
-                },
-            })
-                .populate({
-                path: 'categories',
-                select: {
-                    name: 1,
-                },
-            });
-            if (blogs.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                if (!query.q) {
+                    query.q = '';
+                }
+                const tags = yield model_1.BlogModel.distinct('tags');
+                const cats = yield model_1.BlogModel.distinct('categories');
+                query.tags = query.tags != '' ? query.tags.split(',') : [...tags];
+                query.cats = query.cats != '' ? query.cats.split(',') : [...cats];
+                const totalBlog = yield model_1.BlogModel.countDocuments({
+                    $or: [
+                        { title: { $regex: query.q, $options: 'i' } },
+                        { content: { $regex: query.q, $options: 'i' } },
+                        { slug: { $regex: query.q, $options: 'i' } },
+                    ],
+                })
+                    .where('isPublic', true)
+                    .where('tags')
+                    .in(query.tags)
+                    .where('categories')
+                    .in(query.cats);
+                const blogs = yield model_1.BlogModel.find({
+                    $or: [
+                        { title: { $regex: query.q, $options: 'i' } },
+                        { content: { $regex: query.q, $options: 'i' } },
+                        { slug: { $regex: query.q, $options: 'i' } },
+                    ],
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'categories',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .where('isPublic', true)
+                    .where('tags')
+                    .in(query.tags)
+                    .where('categories')
+                    .in(query.cats)
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (blogs.length === 0 && totalBlog === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Blogs not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Blogs not found',
+                    statusCode: 200,
+                    message: 'get blogs success',
+                    data: {
+                        blogs: blogs,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(totalBlog / limit)
+                            ? page + 1
+                            : null,
+                        totalBlog: totalBlog,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'get blogs',
-                data: blogs,
-            };
+            else {
+                const blogs = yield model_1.BlogModel.find({ isPublic: true })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'categories',
+                    select: {
+                        name: 1,
+                    },
+                });
+                if (blogs.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Blogs not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'get blogs success',
+                    data: {
+                        blogs: blogs,
+                        totalBlog: blogs.length,
+                    },
+                };
+            }
         });
     }
     // get all blogs by author
-    getAllBlogsByAuthor(userId) {
+    getAllBlogsByAuthor(userId, query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const blogs = yield model_1.BlogModel.find({ author: userId });
-            if (blogs.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                if (!query.q) {
+                    query.q = '';
+                }
+                const tags = yield model_1.BlogModel.distinct('tags');
+                const cats = yield model_1.BlogModel.distinct('categories');
+                query.tags =
+                    query.tags != '' || query.tags != undefined ? [...tags] : [];
+                query.cats =
+                    query.cats != '' || query.cats != undefined ? [...cats] : [];
+                const totalBlog = yield model_1.BlogModel.countDocuments({
+                    author: userId,
+                    $or: [
+                        { title: { $regex: query.q, $options: 'i' } },
+                        { content: { $regex: query.q, $options: 'i' } },
+                        { slug: { $regex: query.q, $options: 'i' } },
+                    ],
+                })
+                    .where('tags')
+                    .in(query.tags)
+                    .where('categories')
+                    .in(query.cats);
+                const blogs = yield model_1.BlogModel.find({
+                    author: userId,
+                    $or: [
+                        { title: { $regex: query.q, $options: 'i' } },
+                        { content: { $regex: query.q, $options: 'i' } },
+                        { slug: { $regex: query.q, $options: 'i' } },
+                    ],
+                })
+                    .where('tags')
+                    .in(query.tags)
+                    .where('categories')
+                    .in(query.cats)
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (blogs.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Blogs not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Blogs not found',
+                    statusCode: 200,
+                    message: 'get blogs success',
+                    data: {
+                        blogs: blogs,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(totalBlog / limit)
+                            ? page + 1
+                            : null,
+                        totalBlog: totalBlog,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'get blogs',
-                data: blogs,
-            };
+            else {
+                const blogs = yield model_1.BlogModel.find({ author: userId });
+                if (blogs.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Blogs not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'get blogs',
+                    data: {
+                        blogs: blogs,
+                        totalBlog: blogs.length,
+                    },
+                };
+            }
         });
     }
     // get blog by slug
@@ -426,28 +576,61 @@ class BlogService {
         });
     }
     // get comments
-    getComments(blogId) {
+    getComments(blogId, query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comments = yield model_1.BlogCommentModel.find({
-                blogId: blogId,
-            }).populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                },
-            });
-            if (comments.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const comments = yield model_1.BlogCommentModel.find({
+                    blogId: blogId,
+                })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (comments.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Comments not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Comments not found',
+                    statusCode: 200,
+                    message: 'comments found',
+                    data: {
+                        comments: comments,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(comments.length / limit)
+                            ? page + 1
+                            : null,
+                        totalComments: comments.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'comments found',
-                data: comments,
-            };
+            else {
+                const comments = yield model_1.BlogCommentModel.find({
+                    blogId: blogId,
+                }).populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                    },
+                });
+                if (comments.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Comments not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'comments found',
+                    data: comments,
+                };
+            }
         });
     }
     // get comments by id
@@ -468,23 +651,57 @@ class BlogService {
         });
     }
     // get comments by author
-    getCommentsByAuthor(userId, blogId) {
+    getCommentsByAuthor(userId, blogId, query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comments = yield model_1.BlogCommentModel.find({
-                blogId: blogId,
-                author: userId,
-            });
-            if (comments.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const comments = yield model_1.BlogCommentModel.find({
+                    blogId: blogId,
+                    author: userId,
+                })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (comments.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Comments not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Comments not found',
+                    statusCode: 200,
+                    message: 'comments found',
+                    data: {
+                        comments: comments,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(comments.length / limit)
+                            ? page + 1
+                            : null,
+                        totalComments: comments.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'comments found',
-                data: comments,
-            };
+            else {
+                const comments = yield model_1.BlogCommentModel.find({
+                    blogId: blogId,
+                    author: userId,
+                });
+                if (comments.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Comments not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'comments found',
+                    data: comments,
+                };
+            }
         });
     }
 }

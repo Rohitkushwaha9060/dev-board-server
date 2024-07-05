@@ -66,7 +66,7 @@ class BlogController {
 
     // get blogs
     async getBlogs(req: Request, res: Response, next: NextFunction) {
-        const response = await blogService.getBlogs();
+        const response = await blogService.getBlogs(req.query);
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
@@ -81,7 +81,10 @@ class BlogController {
 
     // get all blogs by author
     async getAllBlogsByAuthor(req: Request, res: Response, next: NextFunction) {
-        const response = await blogService.getAllBlogsByAuthor(req.user?.id!);
+        const response = await blogService.getAllBlogsByAuthor(
+            req.user?.id!,
+            req.query
+        );
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
@@ -247,7 +250,10 @@ class BlogController {
         if (!req.params.id) {
             return next(new HttpError('Blog id is required', 400));
         }
-        const response = await blogService.getComments(req.params.id);
+        const response = await blogService.getComments(
+            req.params.id,
+            req.query
+        );
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
@@ -290,7 +296,8 @@ class BlogController {
 
         const response = await blogService.getCommentsByAuthor(
             req.user?.id!,
-            req.params?.id
+            req.params?.id,
+            req.query
         );
 
         if (response.statusCode === 200) {

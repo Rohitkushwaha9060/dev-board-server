@@ -71,7 +71,7 @@ class TagAndCategoryController {
 
     // get all tags
     async getAllTags(req: Request, res: Response, next: NextFunction) {
-        const response = await tagAndCategoryService.getAllTags();
+        const response = await tagAndCategoryService.getAllTags(req.query);
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
@@ -172,7 +172,9 @@ class TagAndCategoryController {
 
     // get all categories
     async getAllCategories(req: Request, res: Response, next: NextFunction) {
-        const response = await tagAndCategoryService.getAllCategories();
+        const response = await tagAndCategoryService.getAllCategories(
+            req.query
+        );
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({

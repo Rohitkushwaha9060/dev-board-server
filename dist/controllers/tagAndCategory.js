@@ -75,7 +75,7 @@ class TagAndCategoryController {
     // get all tags
     getAllTags(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.tagAndCategoryService.getAllTags();
+            const response = yield services_1.tagAndCategoryService.getAllTags(req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -168,7 +168,7 @@ class TagAndCategoryController {
     // get all categories
     getAllCategories(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.tagAndCategoryService.getAllCategories();
+            const response = yield services_1.tagAndCategoryService.getAllCategories(req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,

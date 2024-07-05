@@ -74,67 +74,141 @@ class QAService {
     }
 
     // get all questions
-    async getAllQuestions() {
-        const questions = await QAModel.find({ isPublic: true })
-            .populate({
-                path: 'tags',
-                select: {
-                    name: 1,
-                },
-            })
-            .populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            });
+    async getAllQuestions(query: any) {
+        if (query.func == 'true') {
+            const page = query.page ? parseInt(query.page) : 1;
+            const limit = query.limit ? parseInt(query.limit) : 10;
+            const skip = (page - 1) * limit;
+            const sort = query.sort ? query.sort : '-createdAt';
 
-        if (questions.length === 0) {
+            const questions = await QAModel.find({ isPublic: true })
+                .sort(sort)
+                .skip(skip)
+                .limit(limit);
+
+            if (questions.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Questions not found',
+                };
+            }
+
             return {
-                statusCode: 404,
-                message: 'Questions not found',
+                statusCode: 200,
+                message: 'Questions found',
+                data: {
+                    questions: questions,
+                    prevPage: page - 1 > 0 ? page - 1 : null,
+                    currentPage: page,
+                    nextPage:
+                        page + 1 <= Math.ceil(questions.length / limit)
+                            ? page + 1
+                            : null,
+                    totalQuestions: questions.length,
+                },
+            };
+        } else {
+            const questions = await QAModel.find({ isPublic: true })
+                .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+
+            if (questions.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Questions not found',
+                };
+            }
+
+            return {
+                statusCode: 200,
+                message: 'Questions found',
+                data: {
+                    questions: questions,
+                    totalQuestions: questions.length,
+                },
             };
         }
-
-        return {
-            statusCode: 200,
-            message: 'Questions found',
-            data: questions,
-        };
     }
 
     // get all questions by author
-    async getAllQuestionsByAuthor(userId: string) {
-        const questions = await QAModel.find({ author: userId })
-            .populate({
-                path: 'tags',
-                select: {
-                    name: 1,
-                },
-            })
-            .populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            });
+    async getAllQuestionsByAuthor(userId: string, query: any) {
+        if (query.func == 'true') {
+            const page = query.page ? parseInt(query.page) : 1;
+            const limit = query.limit ? parseInt(query.limit) : 10;
+            const skip = (page - 1) * limit;
+            const sort = query.sort ? query.sort : '-createdAt';
 
-        if (questions.length === 0) {
+            const questions = await QAModel.find({ author: userId })
+                .sort(sort)
+                .skip(skip)
+                .limit(limit);
+
+            if (questions.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Questions not found',
+                };
+            }
+
             return {
-                statusCode: 404,
-                message: 'Questions not found',
+                statusCode: 200,
+                message: 'Questions found',
+                data: {
+                    questions: questions,
+                    prevPage: page - 1 > 0 ? page - 1 : null,
+                    currentPage: page,
+                    nextPage:
+                        page + 1 <= Math.ceil(questions.length / limit)
+                            ? page + 1
+                            : null,
+                    totalQuestions: questions.length,
+                },
+            };
+        } else {
+            const questions = await QAModel.find({ author: userId })
+                .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+
+            if (questions.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Questions not found',
+                };
+            }
+
+            return {
+                statusCode: 200,
+                message: 'Questions found',
+                data: {
+                    questions: questions,
+                    totalQuestions: questions.length,
+                },
             };
         }
-
-        return {
-            statusCode: 200,
-            message: 'Questions found',
-            data: questions,
-        };
     }
 
     // get question by id
@@ -313,62 +387,144 @@ class QAService {
     }
 
     // get answers
-    async getAnswers(questionId: string) {
-        const answers = await AnswerModel.find({
-            questionId: questionId,
-        }).populate({
-            path: 'author',
-            select: {
-                name: 1,
-                email: 1,
-                avatar: 1,
-            },
-        });
+    async getAnswers(questionId: string, query: any) {
+        if (query.func == 'true') {
+            const page = query.page ? parseInt(query.page) : 1;
+            const limit = query.limit ? parseInt(query.limit) : 10;
+            const skip = (page - 1) * limit;
+            const sort = query.sort ? query.sort : '-createdAt';
 
-        if (answers.length === 0) {
+            const answers = await AnswerModel.find({
+                questionId: questionId,
+            })
+                .sort(sort)
+                .skip(skip)
+                .limit(limit);
+
+            if (answers.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Answers not found',
+                };
+            }
+
             return {
-                statusCode: 404,
-                message: 'Answers not found',
+                statusCode: 200,
+                message: 'Answers found',
+                data: {
+                    answers: answers,
+                    prevPage: page - 1 > 0 ? page - 1 : null,
+                    currentPage: page,
+                    nextPage:
+                        page + 1 <= Math.ceil(answers.length / limit)
+                            ? page + 1
+                            : null,
+                    totalAnswers: answers.length,
+                },
             };
-        }
-
-        return {
-            statusCode: 200,
-            message: 'Answers found',
-            data: answers,
-        };
-    }
-
-    // get answers by author
-    async getAnswersByAuthor(userId: string, questionId: string) {
-        const answers = await AnswerModel.find({ author: userId, questionId })
-            .populate({
+        } else {
+            const answers = await AnswerModel.find({
+                questionId: questionId,
+            }).populate({
                 path: 'author',
                 select: {
                     name: 1,
                     email: 1,
                     avatar: 1,
                 },
-            })
-            .populate({
-                path: 'question',
-                select: {
-                    question: 1,
-                },
             });
 
-        if (answers.length === 0) {
+            if (answers.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Answers not found',
+                };
+            }
+
             return {
-                statusCode: 404,
-                message: 'Answers not found',
+                statusCode: 200,
+                message: 'Answers found',
+                data: {
+                    answers: answers,
+                    totalAnswers: answers.length,
+                },
             };
         }
+    }
 
-        return {
-            statusCode: 200,
-            message: 'Answers found',
-            data: answers,
-        };
+    // get answers by author
+    async getAnswersByAuthor(userId: string, questionId: string, query: any) {
+        if (query.func == 'true') {
+            const page = query.page ? parseInt(query.page) : 1;
+            const limit = query.limit ? parseInt(query.limit) : 10;
+            const skip = (page - 1) * limit;
+            const sort = query.sort ? query.sort : '-createdAt';
+
+            const answers = await AnswerModel.find({
+                author: userId,
+                questionId: questionId,
+            })
+                .sort(sort)
+                .skip(skip)
+                .limit(limit);
+
+            if (answers.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Answers not found',
+                };
+            }
+
+            return {
+                statusCode: 200,
+                message: 'Answers found',
+                data: {
+                    answers: answers,
+                    prevPage: page - 1 > 0 ? page - 1 : null,
+                    currentPage: page,
+                    nextPage:
+                        page + 1 <= Math.ceil(answers.length / limit)
+                            ? page + 1
+                            : null,
+                    totalAnswers: answers.length,
+                },
+            };
+        } else {
+            const answers = await AnswerModel.find({
+                author: userId,
+                questionId,
+            })
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                .populate({
+                    path: 'question',
+                    select: {
+                        question: 1,
+                    },
+                });
+
+            if (answers.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Answers not found',
+                };
+            }
+
+            return {
+                statusCode: 200,
+                message: 'Answers found',
+                data: {
+                    answers: answers,
+                    totalAnswers: answers.length,
+                },
+            };
+        }
     }
 
     // get answer by id

@@ -69,65 +69,133 @@ class QAService {
         });
     }
     // get all questions
-    getAllQuestions() {
+    getAllQuestions(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const questions = yield model_1.QAModel.find({ isPublic: true })
-                .populate({
-                path: 'tags',
-                select: {
-                    name: 1,
-                },
-            })
-                .populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            });
-            if (questions.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const questions = yield model_1.QAModel.find({ isPublic: true })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (questions.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Questions not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Questions not found',
+                    statusCode: 200,
+                    message: 'Questions found',
+                    data: {
+                        questions: questions,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(questions.length / limit)
+                            ? page + 1
+                            : null,
+                        totalQuestions: questions.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'Questions found',
-                data: questions,
-            };
+            else {
+                const questions = yield model_1.QAModel.find({ isPublic: true })
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+                if (questions.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Questions not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Questions found',
+                    data: {
+                        questions: questions,
+                        totalQuestions: questions.length,
+                    },
+                };
+            }
         });
     }
     // get all questions by author
-    getAllQuestionsByAuthor(userId) {
+    getAllQuestionsByAuthor(userId, query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const questions = yield model_1.QAModel.find({ author: userId })
-                .populate({
-                path: 'tags',
-                select: {
-                    name: 1,
-                },
-            })
-                .populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            });
-            if (questions.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const questions = yield model_1.QAModel.find({ author: userId })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (questions.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Questions not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Questions not found',
+                    statusCode: 200,
+                    message: 'Questions found',
+                    data: {
+                        questions: questions,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(questions.length / limit)
+                            ? page + 1
+                            : null,
+                        totalQuestions: questions.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'Questions found',
-                data: questions,
-            };
+            else {
+                const questions = yield model_1.QAModel.find({ author: userId })
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+                if (questions.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Questions not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Questions found',
+                    data: {
+                        questions: questions,
+                        totalQuestions: questions.length,
+                    },
+                };
+            }
         });
     }
     // get question by id
@@ -278,60 +346,136 @@ class QAService {
         });
     }
     // get answers
-    getAnswers(questionId) {
+    getAnswers(questionId, query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const answers = yield model_1.AnswerModel.find({
-                questionId: questionId,
-            }).populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            });
-            if (answers.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const answers = yield model_1.AnswerModel.find({
+                    questionId: questionId,
+                })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (answers.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Answers not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Answers not found',
+                    statusCode: 200,
+                    message: 'Answers found',
+                    data: {
+                        answers: answers,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(answers.length / limit)
+                            ? page + 1
+                            : null,
+                        totalAnswers: answers.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'Answers found',
-                data: answers,
-            };
+            else {
+                const answers = yield model_1.AnswerModel.find({
+                    questionId: questionId,
+                }).populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+                if (answers.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Answers not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Answers found',
+                    data: {
+                        answers: answers,
+                        totalAnswers: answers.length,
+                    },
+                };
+            }
         });
     }
     // get answers by author
-    getAnswersByAuthor(userId, questionId) {
+    getAnswersByAuthor(userId, questionId, query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const answers = yield model_1.AnswerModel.find({ author: userId, questionId })
-                .populate({
-                path: 'author',
-                select: {
-                    name: 1,
-                    email: 1,
-                    avatar: 1,
-                },
-            })
-                .populate({
-                path: 'question',
-                select: {
-                    question: 1,
-                },
-            });
-            if (answers.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const answers = yield model_1.AnswerModel.find({
+                    author: userId,
+                    questionId: questionId,
+                })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (answers.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Answers not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Answers not found',
+                    statusCode: 200,
+                    message: 'Answers found',
+                    data: {
+                        answers: answers,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(answers.length / limit)
+                            ? page + 1
+                            : null,
+                        totalAnswers: answers.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'Answers found',
-                data: answers,
-            };
+            else {
+                const answers = yield model_1.AnswerModel.find({
+                    author: userId,
+                    questionId,
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                    .populate({
+                    path: 'question',
+                    select: {
+                        question: 1,
+                    },
+                });
+                if (answers.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Answers not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Answers found',
+                    data: {
+                        answers: answers,
+                        totalAnswers: answers.length,
+                    },
+                };
+            }
         });
     }
     // get answer by id

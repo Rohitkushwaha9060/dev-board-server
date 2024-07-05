@@ -70,22 +70,54 @@ class TagAndCategoryService {
         });
     }
     // get all tags
-    getAllTags() {
+    getAllTags(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const tags = yield model_1.TagModel.find();
-            if (tags.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const tags = yield model_1.TagModel.find()
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (tags.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Tags not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Tags not found',
+                    statusCode: 200,
+                    message: 'Tags found',
+                    data: {
+                        tags: tags,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(tags.length / limit)
+                            ? page + 1
+                            : null,
+                        totalTags: tags.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'Tags found',
-                data: {
-                    tags,
-                },
-            };
+            else {
+                const tags = yield model_1.TagModel.find();
+                if (tags.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Tags not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Tags found',
+                    data: {
+                        tags: tags,
+                        totalTags: tags.length,
+                    },
+                };
+            }
         });
     }
     // get tag by id
@@ -165,22 +197,54 @@ class TagAndCategoryService {
         });
     }
     // get all categories
-    getAllCategories() {
+    getAllCategories(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const categories = yield model_1.CategoryModel.find();
-            if (categories.length === 0) {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const categories = yield model_1.CategoryModel.find()
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit);
+                if (categories.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Categories not found',
+                    };
+                }
                 return {
-                    statusCode: 404,
-                    message: 'Categories not found',
+                    statusCode: 200,
+                    message: 'Categories found',
+                    data: {
+                        categories: categories,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(categories.length / limit)
+                            ? page + 1
+                            : null,
+                        totalCategories: categories.length,
+                    },
                 };
             }
-            return {
-                statusCode: 200,
-                message: 'Categories found',
-                data: {
-                    categories,
-                },
-            };
+            else {
+                const categories = yield model_1.CategoryModel.find();
+                if (categories.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Categories not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Categories found',
+                    data: {
+                        categories: categories,
+                        totalCategories: categories.length,
+                    },
+                };
+            }
         });
     }
     // get category by id

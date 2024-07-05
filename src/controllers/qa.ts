@@ -81,7 +81,7 @@ class QAController {
 
     // get all questions
     async getAllQuestions(req: Request, res: Response, next: NextFunction) {
-        const response = await qaService.getAllQuestions();
+        const response = await qaService.getAllQuestions(req.query);
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
@@ -100,7 +100,10 @@ class QAController {
         res: Response,
         next: NextFunction
     ) {
-        const response = await qaService.getAllQuestionsByAuthor(req.user?.id!);
+        const response = await qaService.getAllQuestionsByAuthor(
+            req.user?.id!,
+            req.query
+        );
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
                 statusCode: response.statusCode,
@@ -237,7 +240,10 @@ class QAController {
             return next(new HttpError('Question id is required', 400));
         }
 
-        const response = await qaService.getAnswers(req.params.questionId);
+        const response = await qaService.getAnswers(
+            req.params.questionId,
+            req.query
+        );
 
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({
@@ -254,7 +260,8 @@ class QAController {
     async getAnswersByAuthor(req: Request, res: Response, next: NextFunction) {
         const response = await qaService.getAnswersByAuthor(
             req.user?.id!,
-            req.params.questionId
+            req.params.questionId,
+            req.query
         );
         if (response.statusCode === 200) {
             return res.status(response.statusCode).json({

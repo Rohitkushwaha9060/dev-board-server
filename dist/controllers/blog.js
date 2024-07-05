@@ -77,7 +77,7 @@ class BlogController {
     // get blogs
     getBlogs(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield services_1.blogService.getBlogs();
+            const response = yield services_1.blogService.getBlogs(req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -94,7 +94,7 @@ class BlogController {
     getAllBlogsByAuthor(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const response = yield services_1.blogService.getAllBlogsByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id);
+            const response = yield services_1.blogService.getAllBlogsByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -263,7 +263,7 @@ class BlogController {
             if (!req.params.id) {
                 return next(new errors_1.HttpError('Blog id is required', 400));
             }
-            const response = yield services_1.blogService.getComments(req.params.id);
+            const response = yield services_1.blogService.getComments(req.params.id, req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
@@ -305,7 +305,7 @@ class BlogController {
             if (!req.params.id) {
                 return next(new errors_1.HttpError('Blog id is required', 400));
             }
-            const response = yield services_1.blogService.getCommentsByAuthor((_b = req.user) === null || _b === void 0 ? void 0 : _b.id, (_c = req.params) === null || _c === void 0 ? void 0 : _c.id);
+            const response = yield services_1.blogService.getCommentsByAuthor((_b = req.user) === null || _b === void 0 ? void 0 : _b.id, (_c = req.params) === null || _c === void 0 ? void 0 : _c.id, req.query);
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
