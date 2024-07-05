@@ -66,12 +66,4 @@ router.post(
     errorHandler(authController.changePassword)
 );
 
-// upload avatar
-router.post(
-    '/avatar',
-    errorHandler(jwtMiddleware),
-    errorHandler(multerMiddleware.single('avatar')),
-    errorHandler(authController.uploadAvatar)
-);
-
 export { router as authRoutes };

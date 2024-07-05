@@ -295,23 +295,6 @@ class AuthController {
             }
         });
     }
-    // upload avatar
-    uploadAvatar(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            const response = yield services_1.authService.uploadAvatar((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id, req.file);
-            if (response.statusCode === 200) {
-                return res.status(200).json({
-                    statusCode: response.statusCode,
-                    message: response.message,
-                    data: response.data,
-                });
-            }
-            else {
-                return next(new errors_1.HttpError(response.message, response.statusCode));
-            }
-        });
-    }
 }
 exports.authController = new AuthController();
 //# sourceMappingURL=auth.js.map

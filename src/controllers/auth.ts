@@ -310,23 +310,5 @@ class AuthController {
             return next(new HttpError(response.message, response.statusCode));
         }
     }
-
-    // upload avatar
-    async uploadAvatar(req: Request, res: Response, next: NextFunction) {
-        const response = await authService.uploadAvatar(
-            req?.user?.id!,
-            req.file
-        );
-
-        if (response.statusCode === 200) {
-            return res.status(200).json({
-                statusCode: response.statusCode,
-                message: response.message,
-                data: response.data,
-            });
-        } else {
-            return next(new HttpError(response.message, response.statusCode));
-        }
-    }
 }
 export const authController = new AuthController();

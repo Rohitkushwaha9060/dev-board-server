@@ -3,3 +3,4 @@ export * from './tag';
 export * from './category';
 export * from './blog';
 export * from './qa';
+export * from './user';

@@ -51,6 +51,7 @@ class AuthService {
             yield model_1.UserModel.updateOne({ email }, { token });
             // send verification email
             yield email_1.emailService.sendVerificationEmail(email, otp);
+            newUser.otp = '';
             // return response
             return {
                 statusCode: 201,
@@ -369,54 +370,6 @@ class AuthService {
             return {
                 statusCode: 200,
                 message: 'password changed',
-            };
-        });
-    }
-    // upload avatar
-    uploadAvatar(userId, file) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
-            // find user
-            const user = yield model_1.UserModel.findOne({ _id: userId });
-            if (!user) {
-                return {
-                    statusCode: 404,
-                    message: 'User not found',
-                };
-            }
-            if (!file) {
-                // check if file is valid
-                return {
-                    statusCode: 400,
-                    message: 'Avatar is required',
-                };
-            }
-            // check extension
-            const extName = file.originalname.split('.').pop();
-            if (!['png', 'jpg', 'jpeg', 'webp'].includes(extName)) {
-                return {
-                    statusCode: 400,
-                    message: 'Invalid image extension',
-                };
-            }
-            //upload on cloudinary
-            const cloudinaryRes = yield utils_1.utilsService.uploadToCloudinary(file.path);
-            if ((_a = user.avatar) === null || _a === void 0 ? void 0 : _a.url) {
-                yield utils_1.utilsService.deleteFromCloudinary((_b = user.avatar) === null || _b === void 0 ? void 0 : _b.publicKey);
-            }
-            // update user
-            yield model_1.UserModel.updateOne({ _id: user.id }, {
-                avatar: {
-                    url: cloudinaryRes.secure_url,
-                    publicKey: cloudinaryRes.public_id,
-                },
-            });
-            return {
-                statusCode: 200,
-                message: 'avatar uploaded',
-                data: {
-                    avatar: cloudinaryRes.secure_url,
-                },
             };
         });
     }

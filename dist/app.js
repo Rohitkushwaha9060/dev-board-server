@@ -32,9 +32,13 @@ app.use('/api/v1/tags', routes_1.tagRoutes);
 app.use('/api/v1/categories', routes_1.categoryRoutes);
 app.use('/api/v1/blogs', routes_1.blogRoutes);
 app.use('/api/v1/qas', routes_1.qaRoutes);
+app.use('/api/v1/users', routes_1.userRoutes);
 // app routes
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Hello World! updated' });
+});
+app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Route not found' });
 });
 // export app
 exports.default = app;

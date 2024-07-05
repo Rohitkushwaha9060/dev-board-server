@@ -11,6 +11,7 @@ import {
     categoryRoutes,
     qaRoutes,
     tagRoutes,
+    userRoutes,
 } from '@/routes';
 
 // app
@@ -40,10 +41,15 @@ app.use('/api/v1/tags', tagRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/blogs', blogRoutes);
 app.use('/api/v1/qas', qaRoutes);
+app.use('/api/v1/users', userRoutes);
 
 // app routes
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Hello World! updated' });
+});
+
+app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Route not found' });
 });
 
 // export app

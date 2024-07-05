@@ -27,6 +27,4 @@ router.post('/forget-password', (0, errors_1.errorHandler)(controllers_1.authCon
 router.post('/reset-password', (0, errors_1.errorHandler)(middlewares_1.tokenMiddleware), (0, errors_1.errorHandler)(controllers_1.authController.resetPassword));
 // change password
 router.post('/change-password', (0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.authController.changePassword));
-// upload avatar
-router.post('/avatar', (0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(middlewares_1.multerMiddleware.single('avatar')), (0, errors_1.errorHandler)(controllers_1.authController.uploadAvatar));
 //# sourceMappingURL=auth.js.map

@@ -20,4 +20,5 @@ __exportStar(require("./utils"), exports);
 __exportStar(require("./tagAndCategory"), exports);
 __exportStar(require("./blog"), exports);
 __exportStar(require("./qa"), exports);
+__exportStar(require("./user"), exports);
 //# sourceMappingURL=index.js.map
