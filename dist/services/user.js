@@ -83,6 +83,15 @@ class UserService {
                     message: 'Access denied',
                 };
             }
+            // delete all answers
+            yield model_1.AnswerModel.deleteMany({ author: userId });
+            // delete all questions
+            yield model_1.QAModel.deleteMany({ author: userId });
+            // delete all blogs
+            yield model_1.BlogModel.deleteMany({ author: userId });
+            // delete all comments
+            yield model_1.BlogCommentModel.deleteMany({ author: userId });
+            // delete user
             yield model_1.UserModel.deleteOne({ _id: userId });
             return {
                 statusCode: 200,

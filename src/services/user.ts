@@ -1,4 +1,10 @@
-import { UserModel } from '@/model';
+import {
+    AnswerModel,
+    BlogCommentModel,
+    BlogModel,
+    QAModel,
+    UserModel,
+} from '@/model';
 import { utilsService } from './utils';
 
 class UserService {
@@ -83,6 +89,16 @@ class UserService {
             };
         }
 
+        // delete all answers
+        await AnswerModel.deleteMany({ author: userId });
+        // delete all questions
+        await QAModel.deleteMany({ author: userId });
+        // delete all blogs
+        await BlogModel.deleteMany({ author: userId });
+        // delete all comments
+        await BlogCommentModel.deleteMany({ author: userId });
+
+        // delete user
         await UserModel.deleteOne({ _id: userId });
 
         return {
