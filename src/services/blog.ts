@@ -290,6 +290,10 @@ class BlogService {
                     { new: true }
                 );
             }
+            return {
+                statusCode: 200,
+                message: 'blog liked Reverted',
+            };
         } else {
             // add like
             await BlogModel.updateOne(
@@ -308,12 +312,11 @@ class BlogService {
                     { new: true }
                 );
             }
+            return {
+                statusCode: 200,
+                message: 'blog liked',
+            };
         }
-
-        return {
-            statusCode: 200,
-            message: 'blog liked',
-        };
     }
 
     // toggle isPublished

@@ -47,6 +47,12 @@ const answerSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
         },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Users',
+            },
+        ],
         isPublic: {
             type: Boolean,
             default: true,

@@ -137,6 +137,25 @@ class QAController {
             }
         });
     }
+    // toggle question like
+    toggleQuestionLike(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            if (!req.params.questionId) {
+                return next(new errors_1.HttpError('Question id is required', 400));
+            }
+            const response = yield services_1.qaService.toggleQuestionLike(req.params.questionId, (_a = req.user) === null || _a === void 0 ? void 0 : _a.id);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
     // add answer
     addAnswer(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -158,6 +177,127 @@ class QAController {
                     statusCode: response.statusCode,
                     message: response.message,
                     data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
+    // update answer
+    updateAnswer(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            if (!req.params.answerId) {
+                return next(new errors_1.HttpError('Answer id is required', 400));
+            }
+            const { data, error } = core_1.answerSchema.safeParse(req.body);
+            if (error) {
+                return next(new errors_1.HttpError(error.issues[0].message, 400));
+            }
+            const response = yield services_1.qaService.updateAnswer({
+                answerId: req.params.answerId,
+                answer: data.answer,
+                userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id,
+            });
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
+    // delete answer
+    deleteAnswer(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            if (!req.params.answerId) {
+                return next(new errors_1.HttpError('Answer id is required', 400));
+            }
+            const response = yield services_1.qaService.deleteAnswer(req.params.answerId, (_a = req.user) === null || _a === void 0 ? void 0 : _a.id);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
+    // get answers
+    getAnswers(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!req.params.questionId) {
+                return next(new errors_1.HttpError('Question id is required', 400));
+            }
+            const response = yield services_1.qaService.getAnswers(req.params.questionId);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
+    // get answers by author
+    getAnswersByAuthor(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const response = yield services_1.qaService.getAnswersByAuthor((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, req.params.questionId);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
+    // get answer by id
+    getAnswerById(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!req.params.answerId) {
+                return next(new errors_1.HttpError('Answer id is required', 400));
+            }
+            const response = yield services_1.qaService.getAnswerById(req.params.answerId);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
+    // toggle answer like
+    toggleAnswerLike(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            if (!req.params.answerId) {
+                return next(new errors_1.HttpError('Answer id is required', 400));
+            }
+            const response = yield services_1.qaService.toggleAnswerLike(req.params.answerId, (_a = req.user) === null || _a === void 0 ? void 0 : _a.id);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
                 });
             }
             else {

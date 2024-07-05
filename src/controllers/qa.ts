@@ -131,6 +131,27 @@ class QAController {
         }
     }
 
+    // toggle question like
+    async toggleQuestionLike(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.questionId) {
+            return next(new HttpError('Question id is required', 400));
+        }
+
+        const response = await qaService.toggleQuestionLike(
+            req.params.questionId,
+            req.user?.id!
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // add answer
     async addAnswer(req: Request, res: Response, next: NextFunction) {
         if (!req.params.questionId) {
@@ -154,6 +175,132 @@ class QAController {
                 statusCode: response.statusCode,
                 message: response.message,
                 data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // update answer
+    async updateAnswer(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.answerId) {
+            return next(new HttpError('Answer id is required', 400));
+        }
+
+        const { data, error } = answerSchema.safeParse(req.body);
+
+        if (error) {
+            return next(new HttpError(error.issues[0].message, 400));
+        }
+
+        const response = await qaService.updateAnswer({
+            answerId: req.params.answerId,
+            answer: data.answer,
+            userId: req.user?.id!,
+        });
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // delete answer
+    async deleteAnswer(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.answerId) {
+            return next(new HttpError('Answer id is required', 400));
+        }
+
+        const response = await qaService.deleteAnswer(
+            req.params.answerId,
+            req.user?.id!
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // get answers
+    async getAnswers(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.questionId) {
+            return next(new HttpError('Question id is required', 400));
+        }
+
+        const response = await qaService.getAnswers(req.params.questionId);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // get answers by author
+    async getAnswersByAuthor(req: Request, res: Response, next: NextFunction) {
+        const response = await qaService.getAnswersByAuthor(
+            req.user?.id!,
+            req.params.questionId
+        );
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // get answer by id
+    async getAnswerById(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.answerId) {
+            return next(new HttpError('Answer id is required', 400));
+        }
+
+        const response = await qaService.getAnswerById(req.params.answerId);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
+    // toggle answer like
+    async toggleAnswerLike(req: Request, res: Response, next: NextFunction) {
+        if (!req.params.answerId) {
+            return next(new HttpError('Answer id is required', 400));
+        }
+
+        const response = await qaService.toggleAnswerLike(
+            req.params.answerId,
+            req.user?.id!
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
             });
         } else {
             return next(new HttpError(response.message, response.statusCode));

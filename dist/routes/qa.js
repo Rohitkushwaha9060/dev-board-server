@@ -20,6 +20,21 @@ router
     .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.deleteQuestion))
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getQuestionById));
 router
+    .route('/:questionId/like')
+    .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.toggleQuestionLike));
+router
     .route('/:questionId/answers')
-    .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.addAnswer));
+    .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.addAnswer))
+    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getAnswers));
+router
+    .route('/:questionId/answers/author')
+    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getAnswersByAuthor));
+router
+    .route('/answers/:answerId')
+    .patch((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.updateAnswer))
+    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getAnswerById))
+    .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.deleteAnswer));
+router
+    .route('/answers/:answerId/like')
+    .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.toggleAnswerLike));
 //# sourceMappingURL=qa.js.map

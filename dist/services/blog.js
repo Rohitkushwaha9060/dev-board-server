@@ -255,6 +255,10 @@ class BlogService {
                                 ((_d = blog.author) === null || _d === void 0 ? void 0 : _d.credit) - 1,
                     }, { new: true });
                 }
+                return {
+                    statusCode: 200,
+                    message: 'blog liked Reverted',
+                };
             }
             else {
                 // add like
@@ -267,11 +271,11 @@ class BlogService {
                         credit: ((_g = blog.author) === null || _g === void 0 ? void 0 : _g.credit) + 1,
                     }, { new: true });
                 }
+                return {
+                    statusCode: 200,
+                    message: 'blog liked',
+                };
             }
-            return {
-                statusCode: 200,
-                message: 'blog liked',
-            };
         });
     }
     // toggle isPublished

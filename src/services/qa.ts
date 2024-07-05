@@ -75,12 +75,21 @@ class QAService {
 
     // get all questions
     async getAllQuestions() {
-        const questions = await QAModel.find({ isPublic: true }).populate({
-            path: 'tags',
-            select: {
-                name: 1,
-            },
-        });
+        const questions = await QAModel.find({ isPublic: true })
+            .populate({
+                path: 'tags',
+                select: {
+                    name: 1,
+                },
+            })
+            .populate({
+                path: 'author',
+                select: {
+                    name: 1,
+                    email: 1,
+                    avatar: 1,
+                },
+            });
 
         if (questions.length === 0) {
             return {
@@ -98,12 +107,21 @@ class QAService {
 
     // get all questions by author
     async getAllQuestionsByAuthor(userId: string) {
-        const questions = await QAModel.find({ author: userId }).populate({
-            path: 'tags',
-            select: {
-                name: 1,
-            },
-        });
+        const questions = await QAModel.find({ author: userId })
+            .populate({
+                path: 'tags',
+                select: {
+                    name: 1,
+                },
+            })
+            .populate({
+                path: 'author',
+                select: {
+                    name: 1,
+                    email: 1,
+                    avatar: 1,
+                },
+            });
 
         if (questions.length === 0) {
             return {
@@ -136,6 +154,14 @@ class QAService {
                     select: {
                         answer: 1,
                     },
+                    populate: {
+                        path: 'author',
+                        select: {
+                            name: 1,
+                            email: 1,
+                            avatar: 1,
+                        },
+                    },
                 });
 
             return {
@@ -147,6 +173,38 @@ class QAService {
             return {
                 statusCode: 404,
                 message: 'Question not found',
+            };
+        }
+    }
+
+    // toggle question like
+    async toggleQuestionLike(questionId: string, userId: any) {
+        const question = await QAModel.findById(questionId);
+
+        if (!question) {
+            return {
+                statusCode: 404,
+                message: 'Question not found',
+            };
+        }
+
+        if (question.likes.includes(userId)) {
+            await QAModel.updateOne(
+                { _id: questionId },
+                { $pull: { likes: userId } }
+            );
+            return {
+                statusCode: 200,
+                message: 'Question liked Reverted',
+            };
+        } else {
+            await QAModel.updateOne(
+                { _id: questionId },
+                { $push: { likes: userId } }
+            );
+            return {
+                statusCode: 200,
+                message: 'Question liked',
             };
         }
     }
@@ -187,6 +245,189 @@ class QAService {
             message: 'Answer added',
             data: newAnswer,
         };
+    }
+
+    // update answer
+    async updateAnswer(data: {
+        answerId: string;
+        answer: string;
+        userId: string;
+    }) {
+        const answer = await AnswerModel.findById(data.answerId);
+
+        if (!answer) {
+            return {
+                statusCode: 404,
+                message: 'Answer not found',
+            };
+        }
+
+        // check if user is the author
+        //@ts-ignore
+        if (answer.author?._id != data.userId) {
+            return {
+                statusCode: 400,
+                message: 'Access denied',
+            };
+        }
+
+        const updatedAnswer = await AnswerModel.findOneAndUpdate(
+            { _id: data.answerId },
+            { answer: data.answer },
+            { new: true }
+        );
+
+        return {
+            statusCode: 200,
+            message: 'Answer updated',
+            data: updatedAnswer,
+        };
+    }
+
+    // delete answer
+    async deleteAnswer(answerId: string, userId: string) {
+        const answer = await AnswerModel.findById(answerId);
+
+        if (!answer) {
+            return {
+                statusCode: 404,
+                message: 'Answer not found',
+            };
+        }
+
+        // check if user is the author
+        //@ts-ignore
+        if (answer.author?._id != userId) {
+            return {
+                statusCode: 400,
+                message: 'Access denied',
+            };
+        }
+
+        await AnswerModel.deleteOne({ _id: answerId });
+
+        return {
+            statusCode: 200,
+            message: 'Answer deleted',
+        };
+    }
+
+    // get answers
+    async getAnswers(questionId: string) {
+        const answers = await AnswerModel.find({
+            questionId: questionId,
+        }).populate({
+            path: 'author',
+            select: {
+                name: 1,
+                email: 1,
+                avatar: 1,
+            },
+        });
+
+        if (answers.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Answers not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'Answers found',
+            data: answers,
+        };
+    }
+
+    // get answers by author
+    async getAnswersByAuthor(userId: string, questionId: string) {
+        const answers = await AnswerModel.find({ author: userId, questionId })
+            .populate({
+                path: 'author',
+                select: {
+                    name: 1,
+                    email: 1,
+                    avatar: 1,
+                },
+            })
+            .populate({
+                path: 'question',
+                select: {
+                    question: 1,
+                },
+            });
+
+        if (answers.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Answers not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'Answers found',
+            data: answers,
+        };
+    }
+
+    // get answer by id
+    async getAnswerById(answerId: string) {
+        try {
+            const answer = await AnswerModel.findOne({
+                _id: answerId,
+            }).populate({
+                path: 'author',
+                select: {
+                    name: 1,
+                    email: 1,
+                    avatar: 1,
+                },
+            });
+
+            return {
+                statusCode: 200,
+                message: 'Answer found',
+                data: answer,
+            };
+        } catch (error) {
+            return {
+                statusCode: 404,
+                message: 'Answer not found',
+            };
+        }
+    }
+
+    // toggle answer like
+    async toggleAnswerLike(answerId: string, userId: any) {
+        const answer = await AnswerModel.findById(answerId);
+
+        if (!answer) {
+            return {
+                statusCode: 404,
+                message: 'Answer not found',
+            };
+        }
+
+        if (answer.likes.includes(userId)) {
+            await AnswerModel.updateOne(
+                { _id: answerId },
+                { $pull: { likes: userId } }
+            );
+            return {
+                statusCode: 200,
+                message: 'Answer liked Reverted',
+            };
+        } else {
+            await AnswerModel.updateOne(
+                { _id: answerId },
+                { $push: { likes: userId } }
+            );
+            return {
+                statusCode: 200,
+                message: 'Answer liked',
+            };
+        }
     }
 }
 
