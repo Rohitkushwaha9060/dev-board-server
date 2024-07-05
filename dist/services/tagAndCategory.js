@@ -77,6 +77,7 @@ class TagAndCategoryService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalTags = yield model_1.TagModel.countDocuments();
                 const tags = yield model_1.TagModel.find()
                     .sort(sort)
                     .skip(skip)
@@ -94,10 +95,11 @@ class TagAndCategoryService {
                         tags: tags,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(tags.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalTags / limit)
                             ? page + 1
                             : null,
-                        totalTags: tags.length,
+                        totalTags: totalTags,
+                        totalPages: Math.ceil(totalTags / limit),
                     },
                 };
             }
@@ -204,6 +206,7 @@ class TagAndCategoryService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalCategories = yield model_1.CategoryModel.countDocuments();
                 const categories = yield model_1.CategoryModel.find()
                     .sort(sort)
                     .skip(skip)
@@ -221,10 +224,11 @@ class TagAndCategoryService {
                         categories: categories,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(categories.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalCategories / limit)
                             ? page + 1
                             : null,
-                        totalCategories: categories.length,
+                        totalCategories: totalCategories,
+                        totalPages: Math.ceil(totalCategories / limit),
                     },
                 };
             }

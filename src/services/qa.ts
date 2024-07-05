@@ -81,6 +81,10 @@ class QAService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalQuestions = await QAModel.countDocuments({
+                isPublic: true,
+            });
+
             const questions = await QAModel.find({ isPublic: true })
                 .sort(sort)
                 .skip(skip)
@@ -101,10 +105,11 @@ class QAService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(questions.length / limit)
+                        page + 1 <= Math.ceil(totalQuestions / limit)
                             ? page + 1
                             : null,
-                    totalQuestions: questions.length,
+                    totalQuestions: totalQuestions,
+                    totalPages: Math.ceil(totalQuestions / limit),
                 },
             };
         } else {
@@ -150,6 +155,10 @@ class QAService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalQuestions = await QAModel.countDocuments({
+                author: userId,
+            });
+
             const questions = await QAModel.find({ author: userId })
                 .sort(sort)
                 .skip(skip)
@@ -170,10 +179,11 @@ class QAService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(questions.length / limit)
+                        page + 1 <= Math.ceil(totalQuestions / limit)
                             ? page + 1
                             : null,
-                    totalQuestions: questions.length,
+                    totalQuestions: totalQuestions,
+                    totalPages: Math.ceil(totalQuestions / limit),
                 },
             };
         } else {
@@ -394,6 +404,10 @@ class QAService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalAnswers = await AnswerModel.countDocuments({
+                questionId: questionId,
+            });
+
             const answers = await AnswerModel.find({
                 questionId: questionId,
             })
@@ -416,10 +430,11 @@ class QAService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(answers.length / limit)
+                        page + 1 <= Math.ceil(totalAnswers / limit)
                             ? page + 1
                             : null,
-                    totalAnswers: answers.length,
+                    totalAnswers: totalAnswers,
+                    totalPages: Math.ceil(totalAnswers / limit),
                 },
             };
         } else {
@@ -460,6 +475,11 @@ class QAService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalAnswers = await AnswerModel.countDocuments({
+                author: userId,
+                questionId: questionId,
+            });
+
             const answers = await AnswerModel.find({
                 author: userId,
                 questionId: questionId,
@@ -483,10 +503,11 @@ class QAService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(answers.length / limit)
+                        page + 1 <= Math.ceil(totalAnswers / limit)
                             ? page + 1
                             : null,
-                    totalAnswers: answers.length,
+                    totalAnswers: totalAnswers,
+                    totalPages: Math.ceil(totalAnswers / limit),
                 },
             };
         } else {

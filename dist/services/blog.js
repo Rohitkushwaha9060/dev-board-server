@@ -202,6 +202,7 @@ class BlogService {
                             ? page + 1
                             : null,
                         totalBlog: totalBlog,
+                        totalPages: Math.ceil(totalBlog / limit),
                     },
                 };
             }
@@ -305,6 +306,7 @@ class BlogService {
                             ? page + 1
                             : null,
                         totalBlog: totalBlog,
+                        totalPages: Math.ceil(totalBlog / limit),
                     },
                 };
             }
@@ -583,6 +585,9 @@ class BlogService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalComments = yield model_1.BlogCommentModel.countDocuments({
+                    blogId: blogId,
+                });
                 const comments = yield model_1.BlogCommentModel.find({
                     blogId: blogId,
                 })
@@ -602,10 +607,11 @@ class BlogService {
                         comments: comments,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(comments.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalComments / limit)
                             ? page + 1
                             : null,
-                        totalComments: comments.length,
+                        totalComments: totalComments,
+                        totalPages: Math.ceil(totalComments / limit),
                     },
                 };
             }
@@ -658,6 +664,10 @@ class BlogService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalComments = yield model_1.BlogCommentModel.countDocuments({
+                    blogId: blogId,
+                    author: userId,
+                });
                 const comments = yield model_1.BlogCommentModel.find({
                     blogId: blogId,
                     author: userId,
@@ -678,10 +688,11 @@ class BlogService {
                         comments: comments,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(comments.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalComments / limit)
                             ? page + 1
                             : null,
-                        totalComments: comments.length,
+                        totalComments: totalComments,
+                        totalPages: Math.ceil(totalComments / limit),
                     },
                 };
             }

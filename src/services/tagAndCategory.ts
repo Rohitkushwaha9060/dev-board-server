@@ -69,6 +69,8 @@ class TagAndCategoryService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalTags = await TagModel.countDocuments();
+
             const tags = await TagModel.find()
                 .sort(sort)
                 .skip(skip)
@@ -89,10 +91,11 @@ class TagAndCategoryService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(tags.length / limit)
+                        page + 1 <= Math.ceil(totalTags / limit)
                             ? page + 1
                             : null,
-                    totalTags: tags.length,
+                    totalTags: totalTags,
+                    totalPages: Math.ceil(totalTags / limit),
                 },
             };
         } else {
@@ -200,6 +203,8 @@ class TagAndCategoryService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalCategories = await CategoryModel.countDocuments();
+
             const categories = await CategoryModel.find()
                 .sort(sort)
                 .skip(skip)
@@ -220,10 +225,11 @@ class TagAndCategoryService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(categories.length / limit)
+                        page + 1 <= Math.ceil(totalCategories / limit)
                             ? page + 1
                             : null,
-                    totalCategories: categories.length,
+                    totalCategories: totalCategories,
+                    totalPages: Math.ceil(totalCategories / limit),
                 },
             };
         } else {

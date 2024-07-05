@@ -232,6 +232,7 @@ class BlogService {
                             ? page + 1
                             : null,
                     totalBlog: totalBlog,
+                    totalPages: Math.ceil(totalBlog / limit),
                 },
             };
         } else {
@@ -341,6 +342,7 @@ class BlogService {
                             ? page + 1
                             : null,
                     totalBlog: totalBlog,
+                    totalPages: Math.ceil(totalBlog / limit),
                 },
             };
         } else {
@@ -664,6 +666,10 @@ class BlogService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalComments = await BlogCommentModel.countDocuments({
+                blogId: blogId,
+            });
+
             const comments = await BlogCommentModel.find({
                 blogId: blogId,
             })
@@ -686,10 +692,11 @@ class BlogService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(comments.length / limit)
+                        page + 1 <= Math.ceil(totalComments / limit)
                             ? page + 1
                             : null,
-                    totalComments: comments.length,
+                    totalComments: totalComments,
+                    totalPages: Math.ceil(totalComments / limit),
                 },
             };
         } else {
@@ -744,6 +751,11 @@ class BlogService {
             const skip = (page - 1) * limit;
             const sort = query.sort ? query.sort : '-createdAt';
 
+            const totalComments = await BlogCommentModel.countDocuments({
+                blogId: blogId,
+                author: userId,
+            });
+
             const comments = await BlogCommentModel.find({
                 blogId: blogId,
                 author: userId,
@@ -765,10 +777,11 @@ class BlogService {
                     prevPage: page - 1 > 0 ? page - 1 : null,
                     currentPage: page,
                     nextPage:
-                        page + 1 <= Math.ceil(comments.length / limit)
+                        page + 1 <= Math.ceil(totalComments / limit)
                             ? page + 1
                             : null,
-                    totalComments: comments.length,
+                    totalComments: totalComments,
+                    totalPages: Math.ceil(totalComments / limit),
                 },
             };
         } else {

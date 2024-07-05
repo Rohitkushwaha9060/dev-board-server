@@ -76,6 +76,9 @@ class QAService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalQuestions = yield model_1.QAModel.countDocuments({
+                    isPublic: true,
+                });
                 const questions = yield model_1.QAModel.find({ isPublic: true })
                     .sort(sort)
                     .skip(skip)
@@ -93,10 +96,11 @@ class QAService {
                         questions: questions,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(questions.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalQuestions / limit)
                             ? page + 1
                             : null,
-                        totalQuestions: questions.length,
+                        totalQuestions: totalQuestions,
+                        totalPages: Math.ceil(totalQuestions / limit),
                     },
                 };
             }
@@ -141,6 +145,9 @@ class QAService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalQuestions = yield model_1.QAModel.countDocuments({
+                    author: userId,
+                });
                 const questions = yield model_1.QAModel.find({ author: userId })
                     .sort(sort)
                     .skip(skip)
@@ -158,10 +165,11 @@ class QAService {
                         questions: questions,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(questions.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalQuestions / limit)
                             ? page + 1
                             : null,
-                        totalQuestions: questions.length,
+                        totalQuestions: totalQuestions,
+                        totalPages: Math.ceil(totalQuestions / limit),
                     },
                 };
             }
@@ -353,6 +361,9 @@ class QAService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalAnswers = yield model_1.AnswerModel.countDocuments({
+                    questionId: questionId,
+                });
                 const answers = yield model_1.AnswerModel.find({
                     questionId: questionId,
                 })
@@ -372,10 +383,11 @@ class QAService {
                         answers: answers,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(answers.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalAnswers / limit)
                             ? page + 1
                             : null,
-                        totalAnswers: answers.length,
+                        totalAnswers: totalAnswers,
+                        totalPages: Math.ceil(totalAnswers / limit),
                     },
                 };
             }
@@ -415,6 +427,10 @@ class QAService {
                 const limit = query.limit ? parseInt(query.limit) : 10;
                 const skip = (page - 1) * limit;
                 const sort = query.sort ? query.sort : '-createdAt';
+                const totalAnswers = yield model_1.AnswerModel.countDocuments({
+                    author: userId,
+                    questionId: questionId,
+                });
                 const answers = yield model_1.AnswerModel.find({
                     author: userId,
                     questionId: questionId,
@@ -435,10 +451,11 @@ class QAService {
                         answers: answers,
                         prevPage: page - 1 > 0 ? page - 1 : null,
                         currentPage: page,
-                        nextPage: page + 1 <= Math.ceil(answers.length / limit)
+                        nextPage: page + 1 <= Math.ceil(totalAnswers / limit)
                             ? page + 1
                             : null,
-                        totalAnswers: answers.length,
+                        totalAnswers: totalAnswers,
+                        totalPages: Math.ceil(totalAnswers / limit),
                     },
                 };
             }
