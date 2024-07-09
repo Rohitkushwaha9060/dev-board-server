@@ -3,7 +3,6 @@ import { ServiceResponse } from '@/types';
 import { emailService } from './email';
 import { utilsService } from './utils';
 import { UserModel } from '@/model';
-import fs from 'fs';
 
 class AuthService {
     // sign up

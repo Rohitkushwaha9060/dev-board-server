@@ -49,7 +49,7 @@ class EmailService {
         const mailGenerator = new Mailgen({
             theme: 'default',
             product: {
-                name: 'Kite Institute - Email',
+                name: 'Dev Board - Email',
                 link: '#',
             },
         });
@@ -61,7 +61,7 @@ class EmailService {
     async sendVerificationEmail(email: string, otp: string) {
         const mailgenContent = {
             body: {
-                intro: 'Hi there, welcome to Kite Institute!',
+                intro: 'Hi there, welcome to Dev Board!',
                 dictionary: {
                     OTP: otp,
                 },
