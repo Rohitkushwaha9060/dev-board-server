@@ -593,7 +593,15 @@ class BlogService {
                 })
                     .sort(sort)
                     .skip(skip)
-                    .limit(limit);
+                    .limit(limit)
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
                 if (comments.length === 0) {
                     return {
                         statusCode: 404,
@@ -642,7 +650,14 @@ class BlogService {
     // get comments by id
     getCommentsById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const comment = yield model_1.BlogCommentModel.findOne({ _id: id });
+            const comment = yield model_1.BlogCommentModel.findOne({ _id: id }).populate({
+                path: 'author',
+                select: {
+                    name: 1,
+                    email: 1,
+                    avatar: 1,
+                },
+            });
             if (!comment) {
                 return {
                     statusCode: 404,

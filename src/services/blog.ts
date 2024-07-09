@@ -675,7 +675,15 @@ class BlogService {
             })
                 .sort(sort)
                 .skip(skip)
-                .limit(limit);
+                .limit(limit)
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
 
             if (comments.length === 0) {
                 return {
@@ -727,7 +735,14 @@ class BlogService {
 
     // get comments by id
     async getCommentsById(id: string) {
-        const comment = await BlogCommentModel.findOne({ _id: id });
+        const comment = await BlogCommentModel.findOne({ _id: id }).populate({
+            path: 'author',
+            select: {
+                name: 1,
+                email: 1,
+                avatar: 1,
+            },
+        });
 
         if (!comment) {
             return {
