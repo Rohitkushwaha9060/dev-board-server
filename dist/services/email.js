@@ -53,7 +53,7 @@ class EmailService {
             const mailGenerator = new mailgen_1.default({
                 theme: 'default',
                 product: {
-                    name: 'Kite Institute - Email',
+                    name: 'Dev Board - Email',
                     link: '#',
                 },
             });
@@ -65,7 +65,7 @@ class EmailService {
         return __awaiter(this, void 0, void 0, function* () {
             const mailgenContent = {
                 body: {
-                    intro: 'Hi there, welcome to Kite Institute!',
+                    intro: 'Hi there, welcome to Dev Board!',
                     dictionary: {
                         OTP: otp,
                     },

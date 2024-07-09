@@ -19,7 +19,10 @@ app.use(express_1.default.static('public'));
 app.use(core_1.logger.httpExpress);
 // middleware
 app.use((0, cors_1.default)({
-    origin: [core_1.secrets.ALLOW_ORIGIN_ONE],
+    origin: [
+        'https://dev-board-server.onrender.com',
+        'http://localhost:3000',
+    ],
     credentials: true,
     preflightContinue: true,
     optionsSuccessStatus: 204,
