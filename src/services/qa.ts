@@ -1,13 +1,20 @@
 import { QAModel, AnswerModel } from '@/model';
+import { utilsService } from './utils';
 
 class QAService {
     // create a question
     async createQuestion(data: {
+        title: string;
         question: string;
         tags: Array<string>;
         author: string;
     }) {
+        // slug for url
+        const slug = await utilsService.slugifyData(data.title);
+
         const qa = await new QAModel({
+            title: data.title,
+            slug: slug,
             question: data.question,
             tags: data.tags,
             author: data.author,
@@ -22,6 +29,7 @@ class QAService {
     // update a question
     async updateQuestion(data: {
         questionId: string;
+        title: string;
         question: string;
         tags: Array<string>;
     }) {
@@ -34,9 +42,16 @@ class QAService {
             };
         }
 
+        const slug = await utilsService.slugifyData(data.title);
+
         const updatedQuestion = await QAModel.findOneAndUpdate(
             { _id: data.questionId },
-            { question: data.question, tags: data.tags },
+            {
+                title: data.title,
+                question: data.question,
+                tags: data.tags,
+                slug: slug,
+            },
             { new: true }
         );
 

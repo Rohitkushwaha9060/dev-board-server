@@ -90,6 +90,9 @@ exports.commentSchema = z.object({
     comment: z.string({ required_error: 'Content is required' }),
 });
 exports.questionSchema = z.object({
+    title: z
+        .string({ required_error: 'Title is required' })
+        .min(3, { message: 'Title must be at least 3 characters long' }),
     question: z
         .string({ required_error: 'Question is required' })
         .min(10, { message: 'Question must be at least 10 characters long' }),

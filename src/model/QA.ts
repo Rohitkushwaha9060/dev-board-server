@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 const qaSchema = new mongoose.Schema(
     {
+        title: {
+            type: String,
+        },
+        slug: {
+            type: String,
+        },
         question: {
             type: String,
         },

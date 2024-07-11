@@ -6,6 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnswerModel = exports.QAModel = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const qaSchema = new mongoose_1.default.Schema({
+    title: {
+        type: String,
+    },
+    slug: {
+        type: String,
+    },
     question: {
         type: String,
     },

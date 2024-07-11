@@ -11,11 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.qaService = void 0;
 const model_1 = require("../model");
+const utils_1 = require("./utils");
 class QAService {
     // create a question
     createQuestion(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            // slug for url
+            const slug = yield utils_1.utilsService.slugifyData(data.title);
             const qa = yield new model_1.QAModel({
+                title: data.title,
+                slug: slug,
                 question: data.question,
                 tags: data.tags,
                 author: data.author,
@@ -35,7 +40,13 @@ class QAService {
                     message: 'Question not found',
                 };
             }
-            const updatedQuestion = yield model_1.QAModel.findOneAndUpdate({ _id: data.questionId }, { question: data.question, tags: data.tags }, { new: true });
+            const slug = yield utils_1.utilsService.slugifyData(data.title);
+            const updatedQuestion = yield model_1.QAModel.findOneAndUpdate({ _id: data.questionId }, {
+                title: data.title,
+                question: data.question,
+                tags: data.tags,
+                slug: slug,
+            }, { new: true });
             return {
                 statusCode: 200,
                 message: 'Question updated',

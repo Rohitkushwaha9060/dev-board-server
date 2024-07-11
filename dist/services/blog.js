@@ -631,6 +631,7 @@ class BlogService {
                     select: {
                         name: 1,
                         email: 1,
+                        avatar: 1,
                     },
                 });
                 if (comments.length === 0) {
