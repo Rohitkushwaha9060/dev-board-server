@@ -26,6 +26,7 @@ class QAController {
                 question: data.question,
                 tags: data.tags,
                 author: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id,
+                title: data.title,
             });
             if (response.statusCode === 201) {
                 return res.status(response.statusCode).json({
@@ -53,6 +54,7 @@ class QAController {
                 questionId: req.params.questionId,
                 question: data.question,
                 tags: data.tags,
+                title: data.title,
             });
             if (response.statusCode === 200) {
                 return res.status(response.statusCode).json({

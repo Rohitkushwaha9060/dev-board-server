@@ -17,7 +17,7 @@ class QAService {
     createQuestion(data) {
         return __awaiter(this, void 0, void 0, function* () {
             // slug for url
-            const slug = yield utils_1.utilsService.slugifyData(data.title);
+            const slug = utils_1.utilsService.slugifyData(data.title);
             const qa = yield new model_1.QAModel({
                 title: data.title,
                 slug: slug,

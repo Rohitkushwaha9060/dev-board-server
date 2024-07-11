@@ -16,6 +16,7 @@ class QAController {
             question: data.question,
             tags: data.tags,
             author: req.user?.id!,
+            title: data.title,
         });
 
         if (response.statusCode === 201) {
@@ -45,6 +46,7 @@ class QAController {
             questionId: req.params.questionId,
             question: data.question,
             tags: data.tags,
+            title: data.title,
         });
 
         if (response.statusCode === 200) {

@@ -10,7 +10,7 @@ class QAService {
         author: string;
     }) {
         // slug for url
-        const slug = await utilsService.slugifyData(data.title);
+        const slug = utilsService.slugifyData(data.title);
 
         const qa = await new QAModel({
             title: data.title,
