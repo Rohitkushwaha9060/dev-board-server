@@ -12,6 +12,7 @@ router
     .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(middlewares_1.multerMiddleware.single('avatar')), (0, errors_1.errorHandler)(controllers_1.userController.uploadAvatar));
 router
     .route('/profile')
-    .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.userController.deleteProfile));
+    .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.userController.deleteProfile))
+    .patch((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.userController.updateProfile));
 router.route('/leaderboard').get((0, errors_1.errorHandler)(controllers_1.userController.getTopTenUsers));
 //# sourceMappingURL=user.js.map

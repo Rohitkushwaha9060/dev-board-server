@@ -67,7 +67,47 @@ class UserService {
     }
 
     // update profile
-    async updateProfile(userId: string, data: any) {}
+    async updateProfile(userId: string, data: any) {
+        // check if user exists
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            return {
+                statusCode: 404,
+                message: 'User not found',
+            };
+        }
+        // check if user is the author
+        //@ts-ignore
+        if (user._id != userId) {
+            return {
+                statusCode: 400,
+                message: 'Access denied',
+            };
+        }
+        // update user
+        const updatedUser = await UserModel.findOneAndUpdate(
+            { _id: user.id },
+            {
+                name: data.name,
+            },
+            {
+                new: true,
+            }
+        );
+
+        //@ts-ignore
+        updatedUser.password = undefined;
+        //@ts-ignore
+        updatedUser.otp = undefined;
+        //@ts-ignore
+        updatedUser.token = undefined;
+
+        return {
+            statusCode: 200,
+            message: 'profile updated',
+            data: updatedUser,
+        };
+    }
 
     // delete profile
     async deleteProfile(userId: any) {

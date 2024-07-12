@@ -63,7 +63,41 @@ class UserService {
     }
     // update profile
     updateProfile(userId, data) {
-        return __awaiter(this, void 0, void 0, function* () { });
+        return __awaiter(this, void 0, void 0, function* () {
+            // check if user exists
+            const user = yield model_1.UserModel.findById(userId);
+            if (!user) {
+                return {
+                    statusCode: 404,
+                    message: 'User not found',
+                };
+            }
+            // check if user is the author
+            //@ts-ignore
+            if (user._id != userId) {
+                return {
+                    statusCode: 400,
+                    message: 'Access denied',
+                };
+            }
+            // update user
+            const updatedUser = yield model_1.UserModel.findOneAndUpdate({ _id: user.id }, {
+                name: data.name,
+            }, {
+                new: true,
+            });
+            //@ts-ignore
+            updatedUser.password = undefined;
+            //@ts-ignore
+            updatedUser.otp = undefined;
+            //@ts-ignore
+            updatedUser.token = undefined;
+            return {
+                statusCode: 200,
+                message: 'profile updated',
+                data: updatedUser,
+            };
+        });
     }
     // delete profile
     deleteProfile(userId) {

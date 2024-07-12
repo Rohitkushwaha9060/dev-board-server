@@ -10,9 +10,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = void 0;
+const core_1 = require("../core");
 const errors_1 = require("../errors");
 const services_1 = require("../services");
 class UserController {
+    // update profile
+    updateProfile(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            const { data, error } = core_1.updateProfileSchema.safeParse(req.body);
+            if (error) {
+                return next(new errors_1.HttpError(error.issues[0].message, 400, error));
+            }
+            const response = yield services_1.userService.updateProfile((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id, data);
+            if (response.statusCode === 200) {
+                return res.status(200).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
     // upload avatar
     uploadAvatar(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -88,3 +88,9 @@ export const answerSchema = z.object({
         .string({ required_error: 'Answer is required' })
         .min(10, { message: 'Answer must be at least 10 characters long' }),
 });
+
+export const updateProfileSchema = z.object({
+    name: z
+        .string({ required_error: 'Name is required' })
+        .min(3, { message: 'Name must be at least 3 characters long' }),
+});

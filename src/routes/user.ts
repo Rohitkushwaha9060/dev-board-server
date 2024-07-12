@@ -22,6 +22,10 @@ router
     .delete(
         errorHandler(jwtMiddleware),
         errorHandler(userController.deleteProfile)
+    )
+    .patch(
+        errorHandler(jwtMiddleware),
+        errorHandler(userController.updateProfile)
     );
 
 router.route('/leaderboard').get(errorHandler(userController.getTopTenUsers));
