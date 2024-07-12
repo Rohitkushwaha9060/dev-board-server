@@ -99,6 +99,27 @@ class UserService {
             };
         });
     }
+    // get top ten users
+    getTopTenUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            // get all users
+            const topUsers = yield model_1.UserModel.find()
+                .sort({ credit: -1 })
+                .limit(10)
+                .select('-password -otp -token');
+            if (topUsers.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'No users found',
+                };
+            }
+            return {
+                statusCode: 200,
+                message: 'Top ten users',
+                data: topUsers,
+            };
+        });
+    }
 }
 exports.userService = new UserService();
 //# sourceMappingURL=user.js.map

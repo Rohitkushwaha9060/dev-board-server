@@ -46,6 +46,22 @@ class UserController {
             }
         });
     }
+    // get top ten users
+    getTopTenUsers(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.userService.getTopTenUsers();
+            if (response.statusCode === 200) {
+                return res.status(200).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
 }
 exports.userController = new UserController();
 //# sourceMappingURL=user.js.map

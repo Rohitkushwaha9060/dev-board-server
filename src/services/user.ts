@@ -106,6 +106,28 @@ class UserService {
             message: 'profile deleted',
         };
     }
+
+    // get top ten users
+    async getTopTenUsers() {
+        // get all users
+        const topUsers = await UserModel.find()
+            .sort({ credit: -1 })
+            .limit(10)
+            .select('-password -otp -token');
+
+        if (topUsers.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'No users found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'Top ten users',
+            data: topUsers,
+        };
+    }
 }
 
 export const userService = new UserService();

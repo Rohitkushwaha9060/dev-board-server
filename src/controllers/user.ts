@@ -34,6 +34,21 @@ class UserController {
             return next(new HttpError(response.message, response.statusCode));
         }
     }
+
+    // get top ten users
+    async getTopTenUsers(req: Request, res: Response, next: NextFunction) {
+        const response = await userService.getTopTenUsers();
+
+        if (response.statusCode === 200) {
+            return res.status(200).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
 }
 
 export const userController = new UserController();

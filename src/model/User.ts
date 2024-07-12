@@ -17,8 +17,14 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     avatar: {
-        url: String,
-        publicKey: String,
+        url: {
+            type: String,
+            default: null,
+        },
+        publicKey: {
+            type: String,
+            default: null,
+        },
     },
     role: {
         type: String,

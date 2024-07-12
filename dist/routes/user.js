@@ -13,4 +13,5 @@ router
 router
     .route('/profile')
     .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.userController.deleteProfile));
+router.route('/leaderboard').get((0, errors_1.errorHandler)(controllers_1.userController.getTopTenUsers));
 //# sourceMappingURL=user.js.map

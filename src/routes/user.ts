@@ -24,4 +24,6 @@ router
         errorHandler(userController.deleteProfile)
     );
 
+router.route('/leaderboard').get(errorHandler(userController.getTopTenUsers));
+
 export { router as userRoutes };
