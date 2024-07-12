@@ -11,10 +11,7 @@ router
         errorHandler(jwtMiddleware),
         errorHandler(qaController.createQuestion)
     )
-    .get(
-        errorHandler(jwtMiddleware),
-        errorHandler(qaController.getAllQuestions)
-    );
+    .get(errorHandler(qaController.getAllQuestions));
 
 router
     .route('/author')
@@ -25,10 +22,7 @@ router
 
 router
     .route('/:questionId')
-    .patch(
-        errorHandler(jwtMiddleware),
-        errorHandler(qaController.updateQuestion)
-    )
+    .patch(errorHandler(qaController.updateQuestion))
     .delete(
         errorHandler(jwtMiddleware),
         errorHandler(qaController.deleteQuestion)

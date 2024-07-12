@@ -2,7 +2,7 @@ import { secrets } from '@/core';
 import { ServiceResponse } from '@/types';
 import { emailService } from './email';
 import { utilsService } from './utils';
-import { UserModel } from '@/model';
+import { BlogModel, UserModel } from '@/model';
 
 class AuthService {
     // sign up

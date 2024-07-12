@@ -10,13 +10,13 @@ exports.qaRoutes = router;
 router
     .route('/')
     .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.createQuestion))
-    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getAllQuestions));
+    .get((0, errors_1.errorHandler)(controllers_1.qaController.getAllQuestions));
 router
     .route('/author')
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getAllQuestionsByAuthor));
 router
     .route('/:questionId')
-    .patch((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.updateQuestion))
+    .patch((0, errors_1.errorHandler)(controllers_1.qaController.updateQuestion))
     .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.deleteQuestion))
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getQuestionById));
 router
