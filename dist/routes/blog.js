@@ -33,4 +33,7 @@ router
 router
     .route('/:id/comments/author')
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.blogController.getCommentsByAuthor));
+router
+    .route('/top/blogs')
+    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.blogController.topBlogs));
 //# sourceMappingURL=blog.js.map

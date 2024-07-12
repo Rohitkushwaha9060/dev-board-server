@@ -308,6 +308,72 @@ class QAService {
         }
     }
 
+    // top questions
+    async topQuestions(query: any) {
+        const topQuestions = await QAModel.aggregate([
+            {
+                $addFields: {
+                    totalInteractions: {
+                        $add: [{ $size: '$likes' }, { $size: '$answers' }],
+                    },
+                },
+            },
+            {
+                $sort: { totalInteractions: -1 },
+            },
+            {
+                $limit: 10,
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'tags',
+                    localField: 'tags',
+                    foreignField: '_id',
+                    as: 'tags',
+                },
+            },
+            {
+                $project: {
+                    title: 1,
+                    content: 1,
+                    likes: 1,
+                    answers: 1,
+                    author: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                    },
+                    tags: {
+                        name: 1,
+                    },
+                    categories: 1,
+                    totalInteractions: 1,
+                },
+            },
+        ]);
+
+        if (topQuestions.length === 0) {
+            return {
+                statusCode: 404,
+                message: 'Top Questions not found',
+            };
+        }
+
+        return {
+            statusCode: 200,
+            message: 'Top Questions found',
+            data: topQuestions,
+        };
+    }
+
     // add answer
     async addAnswer(data: {
         questionId: string;
@@ -340,7 +406,7 @@ class QAService {
         await newAnswer.save();
 
         return {
-            statusCode: 200,
+            statusCode: 201,
             message: 'Answer added',
             data: newAnswer,
         };

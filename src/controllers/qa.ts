@@ -157,6 +157,21 @@ class QAController {
         }
     }
 
+    // top questions
+    async topQuestions(req: Request, res: Response, next: NextFunction) {
+        const response = await qaService.topQuestions(req.query);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // add answer
     async addAnswer(req: Request, res: Response, next: NextFunction) {
         if (!req.params.questionId) {
@@ -175,7 +190,7 @@ class QAController {
             userId: req.user?.id!,
         });
 
-        if (response.statusCode === 200) {
+        if (response.statusCode === 201) {
             return res.status(response.statusCode).json({
                 statusCode: response.statusCode,
                 message: response.message,

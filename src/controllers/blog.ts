@@ -169,6 +169,21 @@ class BlogController {
         }
     }
 
+    // top blogs
+    async topBlogs(req: Request, res: Response, next: NextFunction) {
+        const response = await blogService.topBlogs(req.query);
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // add comment
     async addComment(req: Request, res: Response, next: NextFunction) {
         if (!req.params.id) {

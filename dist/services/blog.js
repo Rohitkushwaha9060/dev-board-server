@@ -469,6 +469,81 @@ class BlogService {
             }
         });
     }
+    // top blogs
+    topBlogs(query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const topBlogs = yield model_1.BlogModel.aggregate([
+                {
+                    $addFields: {
+                        totalInteractions: {
+                            $add: [{ $size: '$likes' }, { $size: '$comments' }],
+                        },
+                    },
+                },
+                {
+                    $sort: { totalInteractions: -1 },
+                },
+                {
+                    $limit: 10,
+                },
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author',
+                        foreignField: '_id',
+                        as: 'author',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'tags',
+                        localField: 'tags',
+                        foreignField: '_id',
+                        as: 'tags',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'categories',
+                        foreignField: '_id',
+                        as: 'categories',
+                    },
+                },
+                {
+                    $project: {
+                        title: 1,
+                        content: 1,
+                        likes: 1,
+                        comments: 1,
+                        author: {
+                            _id: 1,
+                            name: 1,
+                            email: 1,
+                        },
+                        tags: {
+                            name: 1,
+                        },
+                        categories: {
+                            name: 1,
+                        },
+                        totalInteractions: 1,
+                    },
+                },
+            ]);
+            if (topBlogs.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Top Blogs not found',
+                };
+            }
+            return {
+                statusCode: 200,
+                message: 'Top Blogs found',
+                data: topBlogs,
+            };
+        });
+    }
     // add comment
     addComment(data) {
         return __awaiter(this, void 0, void 0, function* () {

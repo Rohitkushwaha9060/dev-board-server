@@ -37,4 +37,7 @@ router
 router
     .route('/answers/:answerId/like')
     .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.toggleAnswerLike));
+router
+    .route('/top/questions')
+    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.topQuestions));
 //# sourceMappingURL=qa.js.map

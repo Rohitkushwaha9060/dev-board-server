@@ -71,4 +71,8 @@ router
         errorHandler(blogController.getCommentsByAuthor)
     );
 
+router
+    .route('/top/blogs')
+    .get(errorHandler(jwtMiddleware), errorHandler(blogController.topBlogs));
+
 export { router as blogRoutes };

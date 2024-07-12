@@ -179,6 +179,22 @@ class BlogController {
             }
         });
     }
+    // top blogs
+    topBlogs(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.blogService.topBlogs(req.query);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
     // add comment
     addComment(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {

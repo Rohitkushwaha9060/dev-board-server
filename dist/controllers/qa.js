@@ -158,6 +158,22 @@ class QAController {
             }
         });
     }
+    // top questions
+    topQuestions(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.qaService.topQuestions(req.query);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
     // add answer
     addAnswer(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -174,7 +190,7 @@ class QAController {
                 answer: data.answer,
                 userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id,
             });
-            if (response.statusCode === 200) {
+            if (response.statusCode === 201) {
                 return res.status(response.statusCode).json({
                     statusCode: response.statusCode,
                     message: response.message,

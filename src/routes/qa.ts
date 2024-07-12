@@ -73,4 +73,8 @@ router
         errorHandler(qaController.toggleAnswerLike)
     );
 
+router
+    .route('/top/questions')
+    .get(errorHandler(jwtMiddleware), errorHandler(qaController.topQuestions));
+
 export { router as qaRoutes };
