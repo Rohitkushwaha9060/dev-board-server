@@ -261,6 +261,14 @@ class QAService {
                             avatar: 1,
                         },
                     },
+                })
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
                 });
 
             return {
