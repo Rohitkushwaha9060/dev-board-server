@@ -316,7 +316,7 @@ class AuthService {
             },
         ]);
 
-        if (!user) {
+        if (!user[0]) {
             return {
                 statusCode: 404,
                 message: 'User not found',
@@ -327,7 +327,7 @@ class AuthService {
             statusCode: 200,
             message: 'success',
             data: {
-                user: user,
+                user: user[0],
             },
         };
     }
