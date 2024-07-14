@@ -8,12 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authService = void 0;
 const core_1 = require("../core");
 const email_1 = require("./email");
 const utils_1 = require("./utils");
 const model_1 = require("../model");
+const mongoose_1 = __importDefault(require("mongoose"));
 class AuthService {
     // sign up
     signUp(name, email, phone, password) {
@@ -208,7 +212,66 @@ class AuthService {
     // get user
     getUser(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield model_1.UserModel.findOne({ _id: userId }).select('-password -otp -token -__v');
+            const user = yield model_1.UserModel.aggregate([
+                { $match: { _id: new mongoose_1.default.Types.ObjectId(userId) } },
+                {
+                    $lookup: {
+                        from: 'blogs',
+                        localField: '_id',
+                        foreignField: 'author',
+                        as: 'blogs',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'blogcomments',
+                        localField: '_id',
+                        foreignField: 'author',
+                        as: 'comments',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'qas',
+                        localField: '_id',
+                        foreignField: 'author',
+                        as: 'questions',
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'answers',
+                        localField: '_id',
+                        foreignField: 'author',
+                        as: 'answers',
+                    },
+                },
+                {
+                    $addFields: {
+                        blogCount: { $size: '$blogs' },
+                        blogLikesCount: { $sum: '$blogs.likes' },
+                        questionCount: { $size: '$questions' },
+                        questionLikesCount: { $sum: '$questions.likes' },
+                        answersCount: { $size: '$answers' },
+                        answersLikesCount: { $sum: '$answers.likes' },
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        role: 1,
+                        avatar: 1,
+                        blogCount: 1,
+                        blogLikesCount: 1,
+                        questionCount: 1,
+                        questionLikesCount: 1,
+                        answersCount: 1,
+                        answersLikesCount: 1,
+                    },
+                },
+            ]);
             if (!user) {
                 return {
                     statusCode: 404,

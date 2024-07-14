@@ -3,6 +3,7 @@ import { ServiceResponse } from '@/types';
 import { emailService } from './email';
 import { utilsService } from './utils';
 import { BlogModel, UserModel } from '@/model';
+import mongoose from 'mongoose';
 
 class AuthService {
     // sign up
@@ -253,9 +254,67 @@ class AuthService {
 
     // get user
     async getUser(userId: string) {
-        const user = await UserModel.findOne({ _id: userId }).select(
-            '-password -otp -token -__v'
-        );
+        const user = await UserModel.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+
+            {
+                $lookup: {
+                    from: 'blogs',
+                    localField: '_id',
+                    foreignField: 'author',
+                    as: 'blogs',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'blogcomments',
+                    localField: '_id',
+                    foreignField: 'author',
+                    as: 'comments',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'qas',
+                    localField: '_id',
+                    foreignField: 'author',
+                    as: 'questions',
+                },
+            },
+            {
+                $lookup: {
+                    from: 'answers',
+                    localField: '_id',
+                    foreignField: 'author',
+                    as: 'answers',
+                },
+            },
+            {
+                $addFields: {
+                    blogCount: { $size: '$blogs' },
+                    blogLikesCount: { $sum: '$blogs.likes' },
+                    questionCount: { $size: '$questions' },
+                    questionLikesCount: { $sum: '$questions.likes' },
+                    answersCount: { $size: '$answers' },
+                    answersLikesCount: { $sum: '$answers.likes' },
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    email: 1,
+                    role: 1,
+                    avatar: 1,
+                    blogCount: 1,
+                    blogLikesCount: 1,
+                    questionCount: 1,
+                    questionLikesCount: 1,
+                    answersCount: 1,
+                    answersLikesCount: 1,
+                },
+            },
+        ]);
 
         if (!user) {
             return {
