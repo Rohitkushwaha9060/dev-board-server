@@ -93,7 +93,21 @@ class QAService {
                 const questions = yield model_1.QAModel.find({ isPublic: true })
                     .sort(sort)
                     .skip(skip)
-                    .limit(limit);
+                    .limit(limit)
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
                 if (questions.length === 0) {
                     return {
                         statusCode: 404,
@@ -162,7 +176,105 @@ class QAService {
                 const questions = yield model_1.QAModel.find({ author: userId })
                     .sort(sort)
                     .skip(skip)
-                    .limit(limit);
+                    .limit(limit)
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+                if (questions.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Questions not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Questions found',
+                    data: {
+                        questions: questions,
+                        prevPage: page - 1 > 0 ? page - 1 : null,
+                        currentPage: page,
+                        nextPage: page + 1 <= Math.ceil(totalQuestions / limit)
+                            ? page + 1
+                            : null,
+                        totalQuestions: totalQuestions,
+                        totalPages: Math.ceil(totalQuestions / limit),
+                    },
+                };
+            }
+            else {
+                const questions = yield model_1.QAModel.find({ author: userId })
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
+                if (questions.length === 0) {
+                    return {
+                        statusCode: 404,
+                        message: 'Questions not found',
+                    };
+                }
+                return {
+                    statusCode: 200,
+                    message: 'Questions found',
+                    data: {
+                        questions: questions,
+                        totalQuestions: questions.length,
+                    },
+                };
+            }
+        });
+    }
+    // get all questions by author id
+    getAllQuestionsByAuthorId(userId, query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (query.func == 'true') {
+                const page = query.page ? parseInt(query.page) : 1;
+                const limit = query.limit ? parseInt(query.limit) : 10;
+                const skip = (page - 1) * limit;
+                const sort = query.sort ? query.sort : '-createdAt';
+                const totalQuestions = yield model_1.QAModel.countDocuments({
+                    isPublic: true,
+                    author: userId,
+                });
+                const questions = yield model_1.QAModel.find({ author: userId })
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(limit)
+                    .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                    .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                });
                 if (questions.length === 0) {
                     return {
                         statusCode: 404,

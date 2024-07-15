@@ -97,6 +97,28 @@ class BlogController {
         }
     }
 
+    // get all blogs by author id
+    async getAllBlogsByAuthorId(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const response = await blogService.getAllBlogsByAuthorId(
+            req.params.id,
+            req.query
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // get blog by slug
     async getBlogBySlug(req: Request, res: Response, next: NextFunction) {
         const response = await blogService.getBlogBySlug(req.params.slug);

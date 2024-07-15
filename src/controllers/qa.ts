@@ -117,6 +117,28 @@ class QAController {
         }
     }
 
+    // get all questions by author id
+    async getAllQuestionsByAuthorId(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const response = await qaService.getAllQuestionsByAuthorId(
+            req.params.id,
+            req.query
+        );
+
+        if (response.statusCode === 200) {
+            return res.status(response.statusCode).json({
+                statusCode: response.statusCode,
+                message: response.message,
+                data: response.data,
+            });
+        } else {
+            return next(new HttpError(response.message, response.statusCode));
+        }
+    }
+
     // get question by id
     async getQuestionById(req: Request, res: Response, next: NextFunction) {
         if (!req.params.questionId) {

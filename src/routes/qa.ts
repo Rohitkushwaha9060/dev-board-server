@@ -71,4 +71,8 @@ router
     .route('/top/questions')
     .get(errorHandler(jwtMiddleware), errorHandler(qaController.topQuestions));
 
+router
+    .route('/author/:id')
+    .get(errorHandler(qaController.getAllQuestionsByAuthorId));
+
 export { router as qaRoutes };

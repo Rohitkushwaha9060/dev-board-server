@@ -184,6 +184,14 @@ class BlogService {
                     { slug: { $regex: query.q, $options: 'i' } },
                 ],
             })
+                .where('isPublic', true)
+                .where('tags')
+                .in(query.tags)
+                .where('categories')
+                .in(query.cats)
+                .sort(sort)
+                .skip(skip)
+                .limit(limit)
                 .populate({
                     path: 'author',
                     select: {
@@ -203,15 +211,7 @@ class BlogService {
                     select: {
                         name: 1,
                     },
-                })
-                .where('isPublic', true)
-                .where('tags')
-                .in(query.tags)
-                .where('categories')
-                .in(query.cats)
-                .sort(sort)
-                .skip(skip)
-                .limit(limit);
+                });
 
             if (blogs.length === 0 && totalBlog === 0) {
                 return {
@@ -322,7 +322,27 @@ class BlogService {
                 .in(query.cats)
                 .sort(sort)
                 .skip(skip)
-                .limit(limit);
+                .limit(limit)
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                .populate({
+                    path: 'categories',
+                    select: {
+                        name: 1,
+                    },
+                });
 
             if (blogs.length === 0) {
                 return {
@@ -346,7 +366,162 @@ class BlogService {
                 },
             };
         } else {
-            const blogs = await BlogModel.find({ author: userId });
+            const blogs = await BlogModel.find({ author: userId })
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                .populate({
+                    path: 'categories',
+                    select: {
+                        name: 1,
+                    },
+                });
+
+            if (blogs.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Blogs not found',
+                };
+            }
+
+            return {
+                statusCode: 200,
+                message: 'get blogs',
+                data: {
+                    blogs: blogs,
+                    totalBlog: blogs.length,
+                },
+            };
+        }
+    }
+
+    // get all blogs by author id
+    async getAllBlogsByAuthorId(userId: string, query: any) {
+        if (query.func == 'true') {
+            const page = query.page ? parseInt(query.page) : 1;
+            const limit = query.limit ? parseInt(query.limit) : 10;
+            const skip = (page - 1) * limit;
+            const sort = query.sort ? query.sort : '-createdAt';
+
+            if (!query.q) {
+                query.q = '';
+            }
+
+            const tags = await BlogModel.distinct('tags');
+            const cats = await BlogModel.distinct('categories');
+            query.tags =
+                query.tags != '' || query.tags != undefined ? [...tags] : [];
+            query.cats =
+                query.cats != '' || query.cats != undefined ? [...cats] : [];
+
+            const totalBlog = await BlogModel.countDocuments({
+                author: userId,
+                $or: [
+                    { title: { $regex: query.q, $options: 'i' } },
+                    { content: { $regex: query.q, $options: 'i' } },
+                    { slug: { $regex: query.q, $options: 'i' } },
+                ],
+            })
+                .where('isPublic', true)
+                .where('tags')
+                .in(query.tags)
+                .where('categories')
+                .in(query.cats);
+
+            const blogs = await BlogModel.find({
+                isPublic: true,
+                author: userId,
+                $or: [
+                    { title: { $regex: query.q, $options: 'i' } },
+                    { content: { $regex: query.q, $options: 'i' } },
+                    { slug: { $regex: query.q, $options: 'i' } },
+                ],
+            })
+                .where('tags')
+                .in(query.tags)
+                .where('categories')
+                .in(query.cats)
+                .sort(sort)
+                .skip(skip)
+                .limit(limit)
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                .populate({
+                    path: 'categories',
+                    select: {
+                        name: 1,
+                    },
+                });
+
+            if (blogs.length === 0) {
+                return {
+                    statusCode: 404,
+                    message: 'Blogs not found',
+                };
+            }
+            return {
+                statusCode: 200,
+                message: 'get blogs success',
+                data: {
+                    blogs: blogs,
+                    prevPage: page - 1 > 0 ? page - 1 : null,
+                    currentPage: page,
+                    nextPage:
+                        page + 1 <= Math.ceil(totalBlog / limit)
+                            ? page + 1
+                            : null,
+                    totalBlog: totalBlog,
+                    totalPages: Math.ceil(totalBlog / limit),
+                },
+            };
+        } else {
+            const blogs = await BlogModel.find({
+                isPublic: true,
+                author: userId,
+            })
+                .populate({
+                    path: 'author',
+                    select: {
+                        name: 1,
+                        email: 1,
+                        avatar: 1,
+                    },
+                })
+                .populate({
+                    path: 'tags',
+                    select: {
+                        name: 1,
+                    },
+                })
+                .populate({
+                    path: 'categories',
+                    select: {
+                        name: 1,
+                    },
+                });
 
             if (blogs.length === 0) {
                 return {

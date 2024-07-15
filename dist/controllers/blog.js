@@ -107,6 +107,22 @@ class BlogController {
             }
         });
     }
+    // get all blogs by author id
+    getAllBlogsByAuthorId(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield services_1.blogService.getAllBlogsByAuthorId(req.params.id, req.query);
+            if (response.statusCode === 200) {
+                return res.status(response.statusCode).json({
+                    statusCode: response.statusCode,
+                    message: response.message,
+                    data: response.data,
+                });
+            }
+            else {
+                return next(new errors_1.HttpError(response.message, response.statusCode));
+            }
+        });
+    }
     // get blog by slug
     getBlogBySlug(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {

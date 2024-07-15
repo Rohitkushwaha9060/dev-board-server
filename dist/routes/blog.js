@@ -36,4 +36,7 @@ router
 router
     .route('/top/blogs')
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.blogController.topBlogs));
+router
+    .route('/author/:id')
+    .get((0, errors_1.errorHandler)(controllers_1.blogController.getAllBlogsByAuthorId));
 //# sourceMappingURL=blog.js.map

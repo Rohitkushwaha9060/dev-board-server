@@ -40,4 +40,7 @@ router
 router
     .route('/top/questions')
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.topQuestions));
+router
+    .route('/author/:id')
+    .get((0, errors_1.errorHandler)(controllers_1.qaController.getAllQuestionsByAuthorId));
 //# sourceMappingURL=qa.js.map

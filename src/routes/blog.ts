@@ -75,4 +75,8 @@ router
     .route('/top/blogs')
     .get(errorHandler(jwtMiddleware), errorHandler(blogController.topBlogs));
 
+router
+    .route('/author/:id')
+    .get(errorHandler(blogController.getAllBlogsByAuthorId));
+
 export { router as blogRoutes };
