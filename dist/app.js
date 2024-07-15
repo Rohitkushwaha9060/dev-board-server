@@ -20,7 +20,7 @@ app.use(core_1.logger.httpExpress);
 // middleware
 app.use((0, cors_1.default)({
     origin: [
-        'https://dev-board-server.onrender.com',
+        'https://dev-board-client-alpha.vercel.app',
         'http://localhost:3000',
     ],
     credentials: true,

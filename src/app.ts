@@ -27,7 +27,7 @@ app.use(logger.httpExpress);
 app.use(
     cors({
         origin: [
-            'https://dev-board-server.onrender.com',
+            'https://dev-board-client-alpha.vercel.app',
             'http://localhost:3000',
         ],
         credentials: true,
