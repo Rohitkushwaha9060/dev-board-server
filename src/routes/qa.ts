@@ -22,12 +22,15 @@ router
 
 router
     .route('/:questionId')
-    .patch(errorHandler(qaController.updateQuestion))
+    .get(errorHandler(qaController.getQuestionById))
+    .patch(
+        errorHandler(jwtMiddleware),
+        errorHandler(qaController.updateQuestion)
+    )
     .delete(
         errorHandler(jwtMiddleware),
         errorHandler(qaController.deleteQuestion)
-    )
-    .get(errorHandler(qaController.getQuestionById));
+    );
 
 router
     .route('/:questionId/like')

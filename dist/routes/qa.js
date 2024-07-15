@@ -16,9 +16,9 @@ router
     .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getAllQuestionsByAuthor));
 router
     .route('/:questionId')
-    .patch((0, errors_1.errorHandler)(controllers_1.qaController.updateQuestion))
-    .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.deleteQuestion))
-    .get((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.getQuestionById));
+    .get((0, errors_1.errorHandler)(controllers_1.qaController.getQuestionById))
+    .patch((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.updateQuestion))
+    .delete((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.deleteQuestion));
 router
     .route('/:questionId/like')
     .post((0, errors_1.errorHandler)(middlewares_1.jwtMiddleware), (0, errors_1.errorHandler)(controllers_1.qaController.toggleQuestionLike));
