@@ -27,10 +27,7 @@ router
         errorHandler(jwtMiddleware),
         errorHandler(qaController.deleteQuestion)
     )
-    .get(
-        errorHandler(jwtMiddleware),
-        errorHandler(qaController.getQuestionById)
-    );
+    .get(errorHandler(qaController.getQuestionById));
 
 router
     .route('/:questionId/like')
