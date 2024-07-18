@@ -37,7 +37,7 @@ const server = http_1.default.createServer(app_1.default);
 // socket.io initialization
 const io = new socketIO.Server(server, {
     cors: {
-        origin: [core_1.secrets.ALLOW_ORIGIN_ONE],
+        origin: [core_1.secrets.ALLOW_ORIGIN_ONE, 'http://localhost:3000'],
         optionsSuccessStatus: 204,
         preflightContinue: true,
     },

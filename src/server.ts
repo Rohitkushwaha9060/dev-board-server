@@ -12,7 +12,7 @@ const server = http.createServer(app);
 // socket.io initialization
 const io = new socketIO.Server(server, {
     cors: {
-        origin: [secrets.ALLOW_ORIGIN_ONE],
+        origin: [secrets.ALLOW_ORIGIN_ONE, 'http://localhost:3000'],
         optionsSuccessStatus: 204,
         preflightContinue: true,
     },
