@@ -241,6 +241,7 @@ class AuthService {
                 accessToken,
                 refreshToken,
                 user: {
+                    _id: user?.id
                     name: user.name,
                     email: user.email,
                     role: user.role,
